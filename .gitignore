@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Backend/packages
+/Backend/Source/.vs
+/Backend/Source/CriminalCheckerBackend/bin/Debug/net6.0
+/Backend/Source/CriminalCheckerBackend/obj
+/SSL
