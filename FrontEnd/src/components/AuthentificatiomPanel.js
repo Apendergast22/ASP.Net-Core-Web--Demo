@@ -1,6 +1,6 @@
 import RegistryNewUserForm from './RegistrationUserForm'
 import SignUpForm from './LogonForm'
-import { useUserState, clearInfo } from '../hooks/CurrentUser';
+import { useGlobalState, ClearInfo } from '../hooks/CurrentUser';
 import { removeToken } from '../utilites/StorageService'
 
 import React from 'react';
@@ -13,8 +13,8 @@ function AuthentificatiomPanel() {
 
     // Handling logout
     const HandleLogoutClick = () => {
-        const [ tokenKey, ] = useUserState('tokenStorageKey');
-        clearInfo();
+        const [ tokenKey, ] = useGlobalState('tokenStorageKey');
+        ClearInfo();
         removeToken(tokenKey);
     }
 
@@ -26,9 +26,9 @@ function AuthentificatiomPanel() {
         setState({ signUp: !state.signUp });
     }
  
-    const [ tokenKey, ] = useUserState('tokenStorageKey');
-    const [ name, ] = useUserState('name');
-    const [ patronymic, ] = useUserState('patronymic');  
+    const [ tokenKey, ] = useGlobalState('tokenStorageKey');
+    const [ name, ] = useGlobalState('name');
+    const [ patronymic, ] = useGlobalState('patronymic');  
     if (tokenKey === null) {
         return (
             <div>

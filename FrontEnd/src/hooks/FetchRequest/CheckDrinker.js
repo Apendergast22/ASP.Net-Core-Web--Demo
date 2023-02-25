@@ -1,4 +1,4 @@
-import { useUserState } from '../CurrentUser'
+import { useGlobalState } from '../CurrentUser'
 import { getBaseUrl } from '../../utilites/CommonUtils'
 
 // This error occurs when server returns response with any error.
@@ -18,18 +18,18 @@ class BadRequestError extends Error {
 // Building request to check user in drinkers database.
 function buildRequest(name, surname, patronymic, birthDay){
     let url = getBaseUrl() + "/Drinkers";
-    body = { surname: surname, name: name, patronymic: patronymic, birthDay: birthDay };
+    const body = { surname: surname, name: name, patronymic: patronymic, birthDay: birthDay };
     
     return new Request(url, {
       method: 'POST',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify()
+      body: JSON.stringify(body)
     });
 }
 
 // Checking somebody by their private info.
-export async function checkUser(name, surname, patronymic, birthDay){
+export async function CheckUser(name, surname, patronymic, birthDay){
     let response = await fetch(buildRequest(name, surname, patronymic, birthDay));
     if (response.ok){
         return await response.json();
@@ -39,11 +39,11 @@ export async function checkUser(name, surname, patronymic, birthDay){
 }
 
 // Checking somebody by their token.
-export async function checkLogonUser(){
-    const [ name, ] = useUserState('name');
-    const [ surname, ] = useUserState('surname');
-    const [ patronymic, ] = useUserState('patronymic');
-    const [ birthDay, ] = useUserState('birth_day');
+export async function CheckLogonUser(){
+    const [ name, ] = useGlobalState('name');
+    const [ surname, ] = useGlobalState('surname');
+    const [ patronymic, ] = useGlobalState('patronymic');
+    const [ birthDay, ] = useGlobalState('birth_day');
 
-    return await checkUser(name, surname, patronymic, birthDay);
+    return await CheckUser(name, surname, patronymic, birthDay);
 }

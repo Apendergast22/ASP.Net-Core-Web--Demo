@@ -7,8 +7,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import DrinkerAnimation from './DrinkerAnimation'
-import { checkLogonUser, checkUser } from '../hooks/FetchRequest/CheckDrinker'
-import { useUserState } from '../hooks/CurrentUser'
+import { CheckLogonUser, CheckUser } from '../hooks/FetchRequest/CheckDrinker'
+import { useGlobalState } from '../hooks/CurrentUser'
 import checkDrinkerShema from '../hooks/Validators/CheckDrinkerValidator'
 
 function parseErrorMessage(errorJson) {
@@ -43,25 +43,26 @@ const checkUserData = async eventWithData => {
 function DrinkForm(){
 
   const [disableForms, setDisableForm] = React.useState(false);
-  const refDrinkerAnimation = React.useRef();  
-  const [ tokenKey, ] = useUserState('tokenStorageKey');
+  const refDrinkerAnimation = React.useRef();
+  console.log(typeof(useGlobalState));
+  const tokenKey = useGlobalState("tokenStorageKey");
   setDisableForm(tokenKey !== null);
 
-  const [ name, ] = useUserState('name');
-  const [ surname, ] = useUserState('surname');
-  const [ patronymic, ] = useUserState('patronymic');
-  const [ birth_day, ] = useUserState('birth_day');
+  const name = useGlobalState('name');
+  const surname = useGlobalState('surname');
+  const patronymic = useGlobalState('patronymic');
+  const birth_day = useGlobalState('birth_day');
   
   const HandleSubmit = async event => {
-    const [ tokenKey, ] = useUserState('tokenStorageKey');
+    const tokenKey = useGlobalState('tokenStorageKey');
     if ((tokenKey === null) && !(await checkUserData(event))){
       return;
     }
       
     try{
       let checkingResult = tokenKey == null
-        ? await checkLogonUser()
-        : await checkUser();
+        ? await CheckLogonUser()
+        : await CheckUser();
 
       refDrinkerAnimation.StartAnimation(checkingResult["doesUserDrinker"]);
      }

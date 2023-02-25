@@ -3,7 +3,7 @@ import registrationShema from '../hooks/Validators/RegistrationUserValidator';
 import registryNewUser from '../hooks/FetchRequest/RegistrationUser';
 import generateId from '../utilites/IdentifierGenerator';
 import { buildAddress } from '../utilites/CommonUtils';
-import { useUserState } from '../hooks/CurrentUser';
+import { useGlobalState} from '../hooks/CurrentUser';
 import { tryStoreToken } from '../utilites/StorageService'
 
 import React from 'react';
@@ -20,12 +20,12 @@ class RegistryNewUserForm extends React.Component {
 
   // Sending new user info.
   fetchRegistryUserInfo = async (registrationData, build, appartament) => {
-    const [ , setName ] = useUserState('name');
-    const [ , setSurname ] = useUserState('surname');
-    const [ , setPatronymic] = useUserState('patronymic');
-    const [ , setBirthDay] = useUserState('birth_day');
-    const [ , setCity] = useUserState('city');
-    const [ , setAddress] = useUserState('address');
+    const [ , setName ] = useGlobalState('name');
+    const [ , setSurname ] = useGlobalState('surname');
+    const [ , setPatronymic] = useGlobalState('patronymic');
+    const [ , setBirthDay] = useGlobalState('birth_day');
+    const [ , setCity] = useGlobalState('city');
+    const [ , setAddress] = useGlobalState('address');
 
     setName(registrationData.name);
     setSurname(registrationData.surname);
@@ -38,7 +38,7 @@ class RegistryNewUserForm extends React.Component {
 
   // Token processing.
   processToken = token => {
-    const [ , setTokenStorageKey] = useUserState('tokenStorageKey');
+    const [ , setTokenStorageKey] = useGlobalState('tokenStorageKey');
     let identifier = generateId(20)
     tryStoreToken(identifier, token);
     setTokenStorageKey(identifier);

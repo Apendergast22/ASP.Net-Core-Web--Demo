@@ -1,14 +1,14 @@
-import { useUserState } from '../CurrentUser'
+import { useGlobalState } from '../CurrentUser'
 import { getBaseUrl } from '../../utilites/CommonUtils'
 
 // Build registry new user request.
 function BuildRequest(login, password){
-    const [ name, ] = useUserState('name');
-    const [ surname, ] = useUserState('surname');
-    const [ patronymic, ] = useUserState('patronymic');
-    const [ birth_day, ] = useUserState('birth_day');
-    const [ city, ] = useUserState('city');
-    const [ address, ] = useUserState('address');
+    const [ name, ] = useGlobalState('name');
+    const [ surname, ] = useGlobalState('surname');
+    const [ patronymic, ] = useGlobalState('patronymic');
+    const [ birth_day, ] = useGlobalState('birth_day');
+    const [ city, ] = useGlobalState('city');
+    const [ address, ] = useGlobalState('address');
     const body = {
       login: login,
       password: password,

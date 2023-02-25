@@ -2,7 +2,7 @@ import '../assets/UserForm.css';
 import logonUser from '../hooks/FetchRequest/LogonUser';
 import { tryStoreToken } from '../utilites/StorageService'
 import generateId from '../utilites/IdentifierGenerator';
-import { useUserState } from '../hooks/CurrentUser';
+import { setGlobalState } from '../hooks/CurrentUser';
 import logonShema from '../hooks/Validators/LogonUserValidator';
 
 import React from 'react';
@@ -23,22 +23,13 @@ class SignUpForm extends React.Component {
       return false;
     }
 
-    const [ , setName ] = useUserState('name');
-    const [ , setSurname ] = useUserState('surname');
-    const [ , setPatronymic] = useUserState('patronymic');
-    const [ , setBirthDay] = useUserState('birth_day');
-    const [ , setCity] = useUserState('city');
-    const [ , setAddress] = useUserState('address');
-    const [ , setTokenStorageKey] = useUserState('tokenStorageKey');
-
-    setName(info.Name());
-    setSurname(info.Surname());
-    setPatronymic(info.Patronymic());
-    setBirthDay(info.BirthDay());
-    setCity(info.City());
-    setAddress(info.Address());
-    setTokenStorageKey(identifier);
-
+    setGlobalState('name', info.Name());
+    setGlobalState('surname', info.Surname());
+    setGlobalState('patronymic', info.Patronymic());
+    setGlobalState('birth_day', info.BirthDay());
+    setGlobalState('city', info.City());
+    setGlobalState('address', info.Address());
+    setGlobalState('tokenStorageKey', identifier);
     return true;
   }
 
