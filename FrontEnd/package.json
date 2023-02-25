@@ -13,11 +13,14 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
+    "react-hooks-global-state": "^2.1.0",
     "react-native": "^0.71.3",
     "react-native-web": "^0.18.12",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yap": "^0.0.2",
+    "yup": "^0.28.5"
   },
   "scripts": {
     "start_ssl": "set HTTPS=true&&set SSL_CRT_FILE=../SSL/server.crt&&set SSL_KEY_FILE=../SSL/server.key&&react-scripts start",

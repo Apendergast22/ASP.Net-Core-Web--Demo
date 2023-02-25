@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import DrinkForm from './DrinkForm.js';
+import DrinkForm from '../DrinkForm.js';
 
 test('renders learn react link', () => {
   render(<App />);
