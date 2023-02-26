@@ -1,22 +1,21 @@
+import '../assets/NavBar.css'
 import React from "react";
-import { NavLink } from "react-router-dom";
-import AuthentificatiomPanel from "./AuthentificatiomPanel"
-import Form from 'react-bootstrap/Form'
-import NavBar from 'react-bootstrap/NavBar'
+import { Navbar, Nav } from 'react-bootstrap'
+import AuthentificatiomPanel from "./AuthentificatiomPanel";
 
-function Header() {
+function AppHeader() {
   return (
-    <NavBar>
-        <NavBar.Collapse>
-            <NavLink exact activeClassName="active" to="/">На главную</NavLink>
-            <NavLink activeClassName="active" to="/drinkers">Провека в базе алкоголиков.</NavLink>
-            <NavLink activeClassName="active" to="/criminals">Проверка в базе подозреваемых по уголовным делам.</NavLink>
-        </NavBar.Collapse>
-        <Form inline className="mx-3">
-            <AuthentificatiomPanel />
-        </Form>
-    </NavBar>
+    <Navbar>
+      <Navbar.Collapse>
+        <Nav className="ml-auto">
+            <Nav.Link className="headerLinks" eventKey={1} href="/">На главную</Nav.Link>
+            <Nav.Link className="headerLinks" eventKey={2} href="/drinkers">Провека в базе алкоголиков</Nav.Link>
+            <Nav.Link className="headerLinks" eventKey={3} href="/criminals">Проверка в базе подозреваемых по уголовным делам</Nav.Link>
+        </Nav>
+          <AuthentificatiomPanel class = "authentication" />
+      </Navbar.Collapse>
+    </Navbar>
   );
 }
 
-export default Header;
+export default AppHeader;

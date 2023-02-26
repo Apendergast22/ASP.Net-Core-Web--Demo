@@ -25,7 +25,7 @@
   "scripts": {
     "start_ssl": "set HTTPS=true&&set SSL_CRT_FILE=../SSL/server.crt&&set SSL_KEY_FILE=../SSL/server.key&&react-scripts start",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "run-script build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

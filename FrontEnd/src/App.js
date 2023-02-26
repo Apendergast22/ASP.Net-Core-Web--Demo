@@ -3,20 +3,27 @@ import DrinkForm  from './components/DrinkForm'
 import Header from './components/NavBar'
 import Homepage from './components/Homepage'
 import { Component } from 'react';
-import { Router, Route, Routes } from 'react-router';
 
 // https://stackoverflow.com/questions/43620289/react-router-cannot-read-property-pathname-of-undefined
 class App extends Component {
-  render() { 
+  render() {
+    let drawingComponent;
+    switch (window.location.pathname){
+      case "/":
+        drawingComponent = <Homepage />;
+        break;
+      case "/drinkers":
+        drawingComponent = <DrinkForm />;
+        break;
+        case "/criminals":
+          drawingComponent = <DrinkForm />;
+          break;
+    }
     return(
-      <Router>
-        <Header/>
-        <Routes>
-          <Route path="/" element={<Homepage/>}/>
-          <Route path="/drinkers" element={<DrinkForm/>}/>
-          <Route path="/criminals" element={<DrinkForm/>}/>
-        </Routes>
-      </Router>
+    <>
+      <Header />
+      {drawingComponent}
+    </>
       )
   }
 }
