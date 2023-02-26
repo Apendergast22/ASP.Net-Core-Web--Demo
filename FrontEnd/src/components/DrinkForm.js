@@ -39,58 +39,53 @@ const checkUserData = async eventWithData => {
   return await checkDrinkerShema.isValid(userData);
 }
 
+function IsUserLogon() {
+  const [ tokenKey, ] = useGlobalState("tokenStorageKey");
+  return tokenKey !== null;
+}
+
 // https://react-bootstrap.github.io/layout/stack/
 function DrinkForm(){
-
-  const [disableForms, setDisableForm] = React.useState(false);
   const refDrinkerAnimation = React.useRef();
-  console.log(typeof(useGlobalState));
-  const tokenKey = useGlobalState("tokenStorageKey");
-  setDisableForm(tokenKey !== null);
-
-  const name = useGlobalState('name');
-  const surname = useGlobalState('surname');
-  const patronymic = useGlobalState('patronymic');
-  const birth_day = useGlobalState('birth_day');
-  
+  const [private_info, ] = useGlobalState('private');
   const HandleSubmit = async event => {
-    const tokenKey = useGlobalState('tokenStorageKey');
-    if ((tokenKey === null) && !(await checkUserData(event))){
-      return;
-    }
-      
-    try{
-      let checkingResult = tokenKey == null
-        ? await CheckLogonUser()
-        : await CheckUser();
-
-      refDrinkerAnimation.StartAnimation(checkingResult["doesUserDrinker"]);
-     }
-    catch (exception){
-      alert(parseErrorMessage(exception.Details()));
-    }
+  const [tokenKey, ] = useGlobalState('tokenStorageKey');
+  if ((tokenKey === null) && !(await checkUserData(event))){
+    return;
   }
+      
+  try{
+    let checkingResult = tokenKey == null
+      ? await CheckLogonUser()
+      : await CheckUser();
+
+    refDrinkerAnimation.StartAnimation(checkingResult["doesUserDrinker"]);
+  }
+  catch (exception){
+    alert(parseErrorMessage(exception.Details()));
+  }
+}
 
   return (
    <div className="DrinkForm">
      <Stack direction="horizontal" gap={3}>
        <Col sm={5}>
-          <Form onSubmit={HandleSubmit}>
+          <Form onSubmit={HandleSubmit.bind(this)}>
             <Form.Group as={Row} className="mb-3" controlId="surname">
               <Form.Label as="legend" column sm={0}>Фамилия: </Form.Label>
-              <Col sm={8}><Form.Control type="text" placeholder="Введите вашу фамилию..." value={disableForms ? surname : ""} disabled={disableForms} /></Col>
+              <Col sm={8}><Form.Control type="text" placeholder="Введите вашу фамилию..." defaultValue={IsUserLogon() ? private_info.surname : ""} disabled={IsUserLogon()} /></Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="name">
               <Form.Label as="legend" column sm={0}>Имя: </Form.Label>
-              <Col sm={8}><Form.Control type="text" placeholder="Введите ваше имя..." value={disableForms ? name : ""} disabled={disableForms} /></Col>
+              <Col sm={8}><Form.Control type="text" placeholder="Введите ваше имя..." defaultValue={IsUserLogon() ? private_info.name : ""} disabled={IsUserLogon()} /></Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="patronymic">
               <Form.Label as="legend" column sm={0}>Очество: </Form.Label>
-              <Col sm={8}><Form.Control type="text" placeholder="Введите ваше очество..." value={disableForms ? patronymic : ""} disabled={disableForms} /></Col>
+              <Col sm={8}><Form.Control type="text" placeholder="Введите ваше очество..." defaultValue={IsUserLogon() ? private_info.patronymic : ""} disabled={IsUserLogon()} /></Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="birthday">
               <Form.Label as="legend" column sm={0}>Год рождения: </Form.Label>
-              <Col sm={8}><Form.Control type="date" value={disableForms ? birth_day : ""} disabled={disableForms} /></Col>
+              <Col sm={8}><Form.Control type="date" defaultValue={IsUserLogon() ? private_info.birth_day : ""} disabled={IsUserLogon()} /></Col>
             </Form.Group>
             <Col align="right"><Button as="a" variant="success" value="Submit" >Отправить данные</Button></Col>
          </Form>
