@@ -20,19 +20,17 @@ class RegistryNewUserForm extends React.Component {
 
   // Sending new user info.
   fetchRegistryUserInfo = async (registrationData, build, appartament) => {
-    const [ , setName ] = useGlobalState('name');
-    const [ , setSurname ] = useGlobalState('surname');
-    const [ , setPatronymic] = useGlobalState('patronymic');
-    const [ , setBirthDay] = useGlobalState('birth_day');
-    const [ , setCity] = useGlobalState('city');
-    const [ , setAddress] = useGlobalState('address');
+    const [ , setPrivateInfo] = useGlobalState('private');
 
-    setName(registrationData.name);
-    setSurname(registrationData.surname);
-    setPatronymic(registrationData.patronymic);
-    setBirthDay(registrationData.birth_day);
-    setCity(registrationData.city);
-    setAddress(buildAddress(registrationData.street, build, appartament));
+    setPrivateInfo({
+      name: registrationData.name,
+      surname: registrationData.surname,
+      patronymic: registrationData.patronymic,
+      birth_day: registrationData.birth_day,
+      city: registrationData.city,
+      address: buildAddress(registrationData.street, build, appartament)
+     });
+     
     return await registryNewUser(registrationData.login, registrationData.password);
   };
 
@@ -75,7 +73,7 @@ class RegistryNewUserForm extends React.Component {
     return (
         <div className='popup'>
           <Button variant="success" value="Submit" className="popup-x" onClick={()=> this.close()} >X</Button>
-          <Form className='popup_inner' onSubmit={this.handleSubmittion}>
+          <Form className='popup_inner' onSubmit={this.handleSubmittion.bind(this)}>
             <Form.Group className="mb-3">
               <Form.Label>Введите сведения:</Form.Label>
               <Col md><FloatingLabel label="Логин"><Form.Control type="text" /></FloatingLabel></Col>

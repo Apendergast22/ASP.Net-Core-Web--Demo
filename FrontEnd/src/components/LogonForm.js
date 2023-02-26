@@ -23,12 +23,15 @@ class SignUpForm extends React.Component {
       return false;
     }
 
-    setGlobalState('name', info.Name());
-    setGlobalState('surname', info.Surname());
-    setGlobalState('patronymic', info.Patronymic());
-    setGlobalState('birth_day', info.BirthDay());
-    setGlobalState('city', info.City());
-    setGlobalState('address', info.Address());
+    setGlobalState('private', { 
+      name: info.Name(),
+      surname: info.Surname(),
+      patronymic: info.Patronymic(),
+      birth_day: info.BirthDay(),
+      city: info.City(),
+      address: info.Address()
+    })
+    
     setGlobalState('tokenStorageKey', identifier);
     return true;
   }
@@ -67,7 +70,7 @@ class SignUpForm extends React.Component {
     return (
       <div className='popup'>
         <Button variant="success" value="Submit" className="popup-x" onClick={()=> this.close()} >X</Button>
-        <Form className='popup_inner' onSubmit={this.handleSubmittion}>
+        <Form className='popup_inner' onSubmit={this.handleSubmittion.bind(this)}>
           <Form.Group className="mb-3">
               <Form.Label>Логин:</Form.Label>
               <Form.Control type="text" />

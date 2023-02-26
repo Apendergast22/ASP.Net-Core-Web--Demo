@@ -27,8 +27,7 @@ function AuthentificatiomPanel() {
     }
  
     const [ tokenKey, ] = useGlobalState('tokenStorageKey');
-    const [ name, ] = useGlobalState('name');
-    const [ patronymic, ] = useGlobalState('patronymic');  
+    const [ private_info, ] = useGlobalState('private');  
     if (tokenKey === null) {
         return (
             <div>
@@ -52,7 +51,7 @@ function AuthentificatiomPanel() {
     else {  
         return(
             <Form.Group>
-                <Form.Label as="legend" column sm={0}>{name} {patronymic}</Form.Label>
+                <Form.Label as="legend" column sm={0}>{private_info.name} {private_info.patronymic}</Form.Label>
                 <Button sm={2} variant="secondary" onClick={HandleLogoutClick}>Выход</Button>)
             </Form.Group>
         )

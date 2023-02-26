@@ -40,10 +40,6 @@ export async function CheckUser(name, surname, patronymic, birthDay){
 
 // Checking somebody by their token.
 export async function CheckLogonUser(){
-    const [ name, ] = useGlobalState('name');
-    const [ surname, ] = useGlobalState('surname');
-    const [ patronymic, ] = useGlobalState('patronymic');
-    const [ birthDay, ] = useGlobalState('birth_day');
-
-    return await CheckUser(name, surname, patronymic, birthDay);
+    const [ private_info, ] = useGlobalState('name');
+    return await CheckUser(private_info.name, private_info.surname, private_info.patronymic, private_info.birth_day);
 }

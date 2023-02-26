@@ -3,21 +3,16 @@ import { getBaseUrl } from '../../utilites/CommonUtils'
 
 // Build registry new user request.
 function BuildRequest(login, password){
-    const [ name, ] = useGlobalState('name');
-    const [ surname, ] = useGlobalState('surname');
-    const [ patronymic, ] = useGlobalState('patronymic');
-    const [ birth_day, ] = useGlobalState('birth_day');
-    const [ city, ] = useGlobalState('city');
-    const [ address, ] = useGlobalState('address');
+    const [ private_info, ] = useGlobalState('private');
     const body = {
       login: login,
       password: password,
-      name: name,
-      surname: surname,
-      patronymic: patronymic,
-      birth_day: birth_day,
-      city: city,
-      address: address
+      name: private_info.name,
+      surname: private_info.surname,
+      patronymic: private_info.patronymic,
+      birth_day: private_info.birth_day,
+      city: private_info.city,
+      address: private_info.address
     }
     
     const url = getBaseUrl() + "/RegistryNew";
