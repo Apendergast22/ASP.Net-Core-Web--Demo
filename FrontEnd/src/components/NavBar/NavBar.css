@@ -1,0 +1,17 @@
+.navbar {
+    display: flex;
+    align-items: right;
+    background-color: darkslateblue;
+    padding: 12px;
+}
+
+.nav-link {
+    color: whitesmoke;
+    text-decoration: none;
+    font-size:large;
+}
+
+.nav-link:hover{
+    color:honeydew;
+    text-decoration:underline;
+}
