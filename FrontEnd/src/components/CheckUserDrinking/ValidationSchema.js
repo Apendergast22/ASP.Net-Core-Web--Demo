@@ -11,17 +11,17 @@ const checkDrinkerShema = yup.object().shape({
             'symbols-check',
             'Имя не может содержать специальных символов',
             checkNoBadSymbols
-        ).required(),
+        ).required('Имя не может быть пустым!'),
         surname: yup.string().test(
             'symbols-check',
             'Фамилия не может содержать специальных символов',
             checkNoBadSymbols
-        ).required(),
+        ).required('Фамилия не может быть пустым!'),
         patronymic: yup.string().test(
             'symbols-check',
             'Отчество не может содержать специальных символов',
             checkNoBadSymbols
-        ).required(),
+        ),
         birth_day: yup.date().max(today)
     }
 )
