@@ -1,16 +1,21 @@
-import './CheckUserDrinking.css'
+import './CheckUserDrinking.css';
+import vodka_image from'../../assets/drink/Vodka.png';
+import juice_image from'../../assets/drink/Juice.png';
 
 import * as React from 'react';
 import { useFormik } from "formik";
 
+import { View, Image, Text } from 'react-native';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
+import ListGroup from 'react-bootstrap/ListGroup'
+import { sleep_ms } from '../../utilites/CommonUtils';
 
-// import DrinkerAnimation from './DrinkerAnimation'
-import { CheckLogonUser, CheckUser } from '../../services/api/CheckDrinker'
-import checkDrinkerShema from './ValidationSchema'
+import Modal from '../CommonModal/Modal';
+import { CheckLogonUser, CheckUser } from '../../services/api/CheckDrinker';
+import checkDrinkerShema from './ValidationSchema';
 
 function parseErrorMessage(errorJson) {
   let targetProperty = "";
@@ -37,14 +42,32 @@ function IsUserLogon() {
 }
 
 const CheckUserDrinking = () => {
-    const refDrinkerAnimation = React.useRef();
-    const HandleSubmitMain = async (values, actions) => { 
+  const [state, setState] = React.useState({ showVodka: false, showJuice: false });
+  const [active, setActive] = React.useState(false);
+  const StartAnimation = (isDrinker) => {
+    setActive(true);
+    const step = 100;
+    for (let time = 0; time < 5000; time += step){
+        setState({ showVodka : time % (2 * step) == 0 })
+        setState({ showJuice : time % (2 * step) != 0 })
+        sleep_ms(step);
+    }
+            
+    setState({ showVodka : isDrinker })
+    setState({ showJuice : !isDrinker })
+    sleep_ms(5000);
+    setState({ showVodka : false })
+    setState({ showJuice : false })
+    setActive(false);
+  }
+  const HandleSubmitMain = async (values, actions) => { 
     try{
-        let checkingResult = IsUserLogon()
-            ? await CheckLogonUser()
-            : await CheckUser(values.name, values.surname, values.patronymic, values.birth_day);
+      StartAnimation(true);
+      let checkingResult = IsUserLogon()
+        ? await CheckLogonUser()
+        : await CheckUser(values.name, values.surname, values.patronymic, values.birth_day);
 
-        refDrinkerAnimation.StartAnimation(checkingResult["doesUserDrinker"]);
+        StartAnimation(checkingResult["doesUserDrinker"]);
     }
     catch (exception){
       alert(exception)
@@ -64,7 +87,7 @@ const CheckUserDrinking = () => {
         birthday: IsUserLogon() ? "2023-02-27" : "1990-01-01",
       },
       validationSchema: checkDrinkerShema,
-      onSubmit: async (values, actions) => await HandleSubmitMain(values, actions),
+      onSubmit: async (values, actions) => await HandleSubmitMain(values, actions)
     });
 
     return(<div>
@@ -114,9 +137,21 @@ const CheckUserDrinking = () => {
                     disabled={IsUserLogon()} />
                 <Form.Text>{errors.birthday}</Form.Text>
             </Form.Group>
-            <Col align="right"><Button variant="success" type="submit" disabled={isSubmitting}>Отправить данные</Button></Col>
+            <Col align="right"><Button variant="success" type="submit" disabled={isSubmitting} >Отправить данные</Button></Col>
            </Container>
         </Form>
+        <Modal active={active} setActive={setActive}>
+          <View>
+            <ListGroup variant="flush" style={{ display: state.showVodka ? "flex" : "none" }}>
+              <ListGroup.Item style={{ resizeMode: 'contain', alignSelf: 'center'}}><Image source={vodka_image} style={{ width:96, height:256 }} ></Image></ListGroup.Item>
+              <ListGroup.Item style={{ resizeMode: 'contain', alignSelf: 'center'}}><Text>Водка - ваш выбор!!!</Text></ListGroup.Item>
+            </ListGroup>
+              <ListGroup variant="flush" style={{ display: state.showJuice ? "flex" : "none" }}>
+                <ListGroup.Item style={{ resizeMode: 'contain', alignSelf: 'center'}}><Image source={juice_image} style={{ width:96, height:256 }}></Image></ListGroup.Item>
+                <ListGroup.Item style={{ resizeMode: 'contain', alignSelf: 'center'}}><Text>По всей видимости, вы не часто пьете...</Text></ListGroup.Item>
+            </ListGroup>
+          </View>
+        </Modal>
    </div>);
 }
 

@@ -1,7 +1,6 @@
-
-.container{
-    margin: auto;
-    padding: 10px;
+.block{
+    width:800px;
+    margin:0 auto;
 }
 
 .btn{
@@ -12,18 +11,21 @@
 
 
 .btn-gold{
+    background-color: gold;
     margin-top: 10px;
     width: 200px;
     height: 50px;
 }
 
 .btn-purple{
+    background-color: purple;
     margin-top: 10px;
     width: 200px;
     height: 50px;
 }
 
 .btng-green{
+    background-color: green;
     margin-top: 10px;
     width: 200px;
     height: 50px;
