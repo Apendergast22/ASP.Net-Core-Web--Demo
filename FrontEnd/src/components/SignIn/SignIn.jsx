@@ -25,7 +25,7 @@ const SignIn = () => {
         }
     }
 
-    const { values, errors, touched, isSubmitting, handleBlur, handleChange, handleSubmit, } = useFormik(
+    const { values, errors, touched, isSubmitting, handleBlur, handleChange, handleSubmit } = useFormik(
         {
         initialValues: {
             email: "",

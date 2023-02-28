@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // Build full address.
 export function buildAddress(street, build, appartament){
@@ -12,7 +13,8 @@ export function getBaseUrl(){
 }
 
 // Opening the previous page.
-export function openPreviousPage(){
+export function OpenPreviousPage(){
+    const path = useSelector(state => state.path.previous);
     let navigate = useNavigate();
-    navigate({/* Прошлая страница */})
+    navigate(path);
 }

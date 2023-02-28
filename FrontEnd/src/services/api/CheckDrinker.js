@@ -4,7 +4,7 @@ import Cookies from 'universal-cookie';
 
 // Building request to check user in drinkers database.
 function buildRequest(name, surname, patronymic, birthDay){
-    let url = getBaseUrl() + "/drinkers";
+    let url = getBaseUrl() + "/drinker";
     const body = { surname: surname, name: name, patronymic: patronymic, birthDay: birthDay };
     
     return new Request(url, {

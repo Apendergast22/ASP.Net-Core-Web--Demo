@@ -27,7 +27,7 @@ const SignUp = () => {
         }
     }
 
-    const { values, errors, touched, isSubmitting, handleBlur, handleChange, handleSubmit, } = useFormik(
+    const { values, errors, touched, isSubmitting, handleBlur, handleChange, handleSubmit } = useFormik(
         {
         initialValues: {
             email: "",
@@ -47,7 +47,7 @@ const SignUp = () => {
 
     return(
     <div>
-        <Form>
+        <Form onSubmit={values => handleSubmit(values)}>
             <Container className="mb-3">
                 <Form.Group className="mb-3">
                     <Form.Label>Регистрация нового пользователя</Form.Label>
@@ -160,7 +160,7 @@ const SignUp = () => {
                         </FloatingLabel>
                     </Col>
                 </Form.Group>
-                <Col align="center"><Button as="a" variant="success" value="Submit" >Регистрация</Button></Col>
+                <Col align="center"><Button as="a" variant="success" value="Submit" disabled={isSubmitting}>Регистрация</Button></Col>
             </Container>
         </Form>
     </div>);

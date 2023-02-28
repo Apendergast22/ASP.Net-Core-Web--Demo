@@ -2,11 +2,11 @@ import Cookies from 'universal-cookie';
 import { getBaseUrl } from '../../utilites/CommonUtils'
 
 // Build registry new user request.
-function BuildRequest(login, password){
+function BuildRequest(email, password){
   const cookies = new Cookies();
   const private_info = cookies.get('private');
   const body = {
-    login: login,
+    email: email,
     password: password,
     name: private_info.name,
     surname: private_info.surname,
@@ -16,7 +16,7 @@ function BuildRequest(login, password){
     address: private_info.address
   }
     
-  const url = getBaseUrl() + "/RegistryNew";
+  const url = getBaseUrl() + "/signup";
   return new Request(url, {
     method: 'POST',
     mode: 'cors',
@@ -35,8 +35,8 @@ function parse(json){
 }
 
 // Send registry new user request.
-async function signUp(login, password){
-    let request = BuildRequest(login, password);
+async function signUp(email, password){
+    let request = BuildRequest(email, password);
     let response = await fetch(request);
     if (response.ok){
       return parse(await response.json());

@@ -57,7 +57,7 @@ function buildRequest(login, password, keepUser){
       keepUser: keepUser
     }
     
-    const url = getBaseUrl() + "/Logon";
+    const url = getBaseUrl() + "/signin";
     return new Request(url, {
         method: 'GET',
         mode: 'cors',
