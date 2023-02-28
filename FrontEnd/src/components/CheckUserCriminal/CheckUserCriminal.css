@@ -1,0 +1,30 @@
+
+.container{
+    margin: auto;
+    padding: 10px;
+}
+
+.btn{
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+}
+
+
+.btn-gold{
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+}
+
+.btn-purple{
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+}
+
+.btng-green{
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+}

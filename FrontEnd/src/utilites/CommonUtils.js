@@ -18,3 +18,5 @@ export function OpenPreviousPage(){
     let navigate = useNavigate();
     navigate(path);
 }
+
+export const sleep_ms = ms => new Promise(res => setTimeout(res, ms));

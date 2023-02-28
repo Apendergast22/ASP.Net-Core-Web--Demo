@@ -11,6 +11,12 @@
     font-size:large;
 }
 
+.nav-link:visited {
+    color: whitesmoke;
+    text-decoration: none;
+    font-size:large;
+}
+
 .nav-link:hover{
     color:honeydew;
     text-decoration:underline;
