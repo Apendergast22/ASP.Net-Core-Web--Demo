@@ -1,0 +1,10 @@
+.btn{
+    background-color: darkslateblue;
+    text-decoration: none;
+    border-style: none;
+    font-size: small;
+}
+
+.btn:hover{
+    background-color: darkblue;
+}
