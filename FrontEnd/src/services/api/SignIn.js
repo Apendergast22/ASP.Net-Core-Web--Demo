@@ -75,7 +75,7 @@ function parse(json){
   }
   
 // Send registry new user request.
-async function logonUser(login, password){
+async function signIn(login, password){
     let request = buildRequest(login, password);
     let response = await fetch(request);
     if (response.ok){
@@ -85,4 +85,4 @@ async function logonUser(login, password){
     return null;
 }
 
-export default logonUser
+export default signIn

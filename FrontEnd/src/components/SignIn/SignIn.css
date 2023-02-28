@@ -1,0 +1,32 @@
+.form-control{
+    margin: auto;
+}
+
+.input-error{
+    margin: auto;
+    background-color:red;
+}
+
+.container{
+    margin: auto;
+    width: 50%;
+    border: 2px solid gainsboro;
+    padding: 10px;
+    position: absolute;
+    top: 10%;
+    left: 25%;
+}
+
+.col{
+    float: right;
+}
+
+.control-panel{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.form-check{
+    margin-top: 15px;
+}
