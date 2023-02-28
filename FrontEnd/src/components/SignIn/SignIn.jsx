@@ -14,7 +14,7 @@ import signIn from '../../services/api/SignIn';
 const SignIn = () => {
     const SignIn = async (values, actions) => {
         try{
-            await signIn(values.email, values.password)
+            await signIn(values.email, values.password, values.keepUser)
             OpenPreviousPage();
         }
         catch (exception){
@@ -29,13 +29,12 @@ const SignIn = () => {
         {
         initialValues: {
             email: "",
-            password: ""
+            password: "",
+            keepUser: false
         },
         validationSchema: signInShema,
         onSubmit: async (values, actions) => await SignIn(values, actions),
         });
-
-    console.log(errors);
     return(
         <div>
             <Form onSubmit={values => handleSubmit(values)}>
@@ -47,8 +46,7 @@ const SignIn = () => {
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            className={errors.email && touched.email ? "input-error" : "form-control"}
-                            disabled={false} />
+                            className={errors.email && touched.email ? "input-error" : "form-control"} />
                         <Form.Text>{errors.email}</Form.Text>
                     </Form.Group>
                     <Form.Group controlId="password">
@@ -57,8 +55,7 @@ const SignIn = () => {
                             value={values.password}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            className={errors.password && touched.password ? "input-error" : "form-control"}
-                            disabled={false}  />
+                            className={errors.password && touched.password ? "input-error" : "form-control"} />
                         <Form.Text>{errors.password}</Form.Text>
                     </Form.Group>
                     <div className='control-panel'>

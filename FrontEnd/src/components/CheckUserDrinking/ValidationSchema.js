@@ -16,7 +16,7 @@ const checkDrinkerShema = yup.object().shape({
             'symbols-check',
             'Фамилия не может содержать специальных символов',
             checkNoBadSymbols
-        ).required('Фамилия не может быть пустым!'),
+        ).required('Фамилия не может быть пустой!'),
         patronymic: yup.string().test(
             'symbols-check',
             'Отчество не может содержать специальных символов',
