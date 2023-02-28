@@ -15,9 +15,9 @@ function NavigationBar() {
     <Navbar>
         <Navbar.Collapse>
             <Nav>
-                <Nav.Link className='nav-link' onSelect={dispath(onNavigate(INDEX))} href={INDEX}>На главную</Nav.Link>
-                <Nav.Link className='nav-link' onSelect={dispath(onNavigate(DRINK))} href={DRINK}>Алкоголики</Nav.Link>
-                <Nav.Link className='nav-link' onSelect={dispath(onNavigate(CRIMINALS))} href={CRIMINALS}>Уголовники</Nav.Link>
+                <Nav.Link className='nav-link' onSelect={() => dispath(onNavigate(INDEX))} href={INDEX}>На главную</Nav.Link>
+                <Nav.Link className='nav-link' onSelect={() => dispath(onNavigate(DRINK))} href={DRINK}>Алкоголики</Nav.Link>
+                <Nav.Link className='nav-link' onSelect={() => dispath(onNavigate(CRIMINALS))} href={CRIMINALS}>Уголовники</Nav.Link>
             </Nav>
         </Navbar.Collapse>
         <AuthentificatiomPanel/>

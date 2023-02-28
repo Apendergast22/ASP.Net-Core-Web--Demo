@@ -35,6 +35,7 @@ const SignIn = () => {
         validationSchema: signInShema,
         onSubmit: async (values, actions) => await SignIn(values, actions),
         });
+
     return(
         <div>
             <Form onSubmit={values => handleSubmit(values)}>
@@ -58,10 +59,17 @@ const SignIn = () => {
                             className={errors.password && touched.password ? "input-error" : "form-control"} />
                         <Form.Text>{errors.password}</Form.Text>
                     </Form.Group>
-                    <div className='control-panel'>
-                        <Form.Check type="switch" label="Оставаться в системе" controlId="keepUser" />
-                        <Button as="a" variant="success" value="Submit" disabled={isSubmitting}>Войти</Button>
-                    </div>
+                    <Form.Group controlId="keepUser">
+                        <div className='control-panel'>
+                            <Form.Check
+                                type="switch"
+                                value={values.keepUser}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                label="Оставаться в системе" />
+                            <Button as="a" variant="success" value="Submit" disabled={isSubmitting}>Войти</Button>
+                        </div>
+                    </Form.Group>
                 </Container>
             </Form>
         </div>);

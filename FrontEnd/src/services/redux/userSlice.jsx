@@ -6,7 +6,7 @@ const initialUserState = {
     name: "",
     surname: "",
     patronymic: "",
-    birthDay: new Date(),
+    birthDay: "",
     city: "",
     address: "",
     logon: false

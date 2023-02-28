@@ -10,7 +10,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 function AuthentificatiomPanel() {
     const logon = useSelector(state => state.user.logon);
     const email = useSelector(state => state.user.email);
-    if (logon) {
+    if (!logon) {
         return (
             <div>
                 <ButtonGroup>
