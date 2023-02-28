@@ -50,10 +50,11 @@ class UserInfo {
 
 
 // Build registry new user request.
-function buildRequest(login, password){
+function buildRequest(login, password, keepUser){
     const body = {
       login: login,
       password: password,
+      keepUser: keepUser
     }
     
     const url = getBaseUrl() + "/Logon";
