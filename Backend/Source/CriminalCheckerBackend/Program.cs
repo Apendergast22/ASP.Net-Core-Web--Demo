@@ -2,6 +2,7 @@ using CriminalCheckerBackend.Model.Config;
 using CriminalCheckerBackend.Services;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.Password;
+using CriminalCheckerBackend.Services.Route;
 using CriminalCheckerBackend.Services.Validator;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +51,8 @@ void RegisterDependencies(WebApplicationBuilder builder)
         return new PasswordService(passwordOptions.PathToSalt, passwordOptions.ItemsCount);
     });
 
-    builder.Services.AddScoped<IDtoValidator>(provider => new DtoValidator());
+    builder.Services.AddScoped<IDtoValidator>(_ => new DtoValidator());
+    builder.Services.AddScoped<IRouteCalculator>(_ => new RouteCalculator());
 }
 
 // Configure authentication.

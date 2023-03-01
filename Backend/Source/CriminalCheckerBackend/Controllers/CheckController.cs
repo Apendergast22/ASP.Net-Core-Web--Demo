@@ -1,9 +1,12 @@
-using CriminalCheckerBackend.Model.DataBase.Exceptions;
 using CriminalCheckerBackend.Model.DTO;
+using CriminalCheckerBackend.Model.Errors;
 using CriminalCheckerBackend.Services.Database;
+using CriminalCheckerBackend.Services.ResponseBody;
+using CriminalCheckerBackend.Services.Validator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using System;
 using ILogger = NLog.ILogger;
 
 namespace CriminalCheckerBackend.Controllers
@@ -26,12 +29,26 @@ namespace CriminalCheckerBackend.Controllers
         private readonly IDataBase _db;
 
         /// <summary>
+        /// Instance of <see cref="IDtoValidator"/>.
+        /// </summary>
+        private readonly IDtoValidator _validator;
+
+        /// <summary>
+        /// Instance of <see cref="IResponseBodyBuilder"/>.
+        /// </summary>
+        private readonly IResponseBodyBuilder _bodyBuilder;
+
+        /// <summary>
         /// Instance new object of <see cref="CheckController"/>.
         /// </summary>
         /// <param name="db">Instance of <see cref="IDataBase"/>.</param>
-        public CheckController(IDataBase db)
+        /// <param name="validator">Instance of <see cref="IDtoValidator"/>.</param>
+        /// <param name="bodyBuilder">Instance of <see cref="IResponseBodyBuilder"/>.</param>
+        public CheckController(IDataBase db, IDtoValidator validator, IResponseBodyBuilder bodyBuilder)
         {
             _db = db;
+            _validator = validator;
+            _bodyBuilder = bodyBuilder;
         }
 
         /// <summary>
@@ -44,32 +61,25 @@ namespace CriminalCheckerBackend.Controllers
         [HttpPost("~/drinker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CheckUserInDrinkersAsync([FromBody]UserRequest userInfo)
+        public async Task<IActionResult> CheckUserInDrinkersAsync([FromBody]DrinkerDto userInfo)
         {
             if (Log.IsInfoEnabled)
                 Log.Info($"User {userInfo.Surname} {userInfo.Name} {userInfo.Patronymic} worries about their drink status");
 
-            try
-            {
-                
-                return Ok(new Dictionary<string,bool>{ { "doesUserDrinker", await _db.DoesUserDrinkerAsync(userInfo).ConfigureAwait(false) } });
-            }
-            catch (NewUserNotValidValueException exception)
-            {
-                var incorrectValue = exception.IsValueEmpty 
-                    ? string.Empty 
-                    : exception.ConflictPropertyValue;
+            try {
+                _validator.Validate(userInfo);
 
-                return ValidationProblem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Incorrect request data",
-                    detail: incorrectValue,
-                    type: nameof(NewUserNotValidValueException),
-                    instance: exception.ConflictPropertyName);
+                var isUserDrinker = userInfo.Id == null
+                    ? await _db.DoesUserDrinkerAsync(userInfo).ConfigureAwait(false)
+                    : await _db.DoesUserDrinkerAsync((int)userInfo.Id).ConfigureAwait(false);
+
+                return Ok(new Dictionary<string,bool>{ { "doesUserDrinker", isUserDrinker } });
             }
-            catch
-            {
-                return BadRequest("Unknown error");
+            catch (InvalidDtoException exception) {
+                return BadRequest(_bodyBuilder.Build(exception));
+            }
+            catch {
+                return BadRequest(_bodyBuilder.Build());
             }
         }
 

@@ -5,6 +5,7 @@ using CriminalCheckerBackend.Model.DTO;
 using CriminalCheckerBackend.Model.Errors;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.Password;
+using CriminalCheckerBackend.Services.ResponseBody;
 using CriminalCheckerBackend.Services.Validator;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,16 +23,6 @@ namespace CriminalCheckerBackend.Controllers
     public class UserController : ControllerBase
     {
         /// <summary>
-        /// Response error type key.
-        /// </summary>
-        private const string ErrorType = "type";
-
-        /// <summary>
-        /// Response error type key.
-        /// </summary>
-        private const string ErrorUnknown = "unknown";
-
-        /// <summary>
         /// Instance of <see cref="IDataBase"/>.
         /// </summary>
         private readonly IDataBase _db;
@@ -47,16 +38,27 @@ namespace CriminalCheckerBackend.Controllers
         private readonly IPassword _passwordService;
 
         /// <summary>
+        /// Instance of <see cref="IResponseBodyBuilder"/>.
+        /// </summary>
+        private readonly IResponseBodyBuilder _bodyBuilder;
+
+        /// <summary>
         /// Create new instance <see cref="UserController"/>.
         /// </summary>
         /// <param name="db">Instance of <see cref="IDataBase"/>.</param>
         /// <param name="validator">Instance of <see cref="IDtoValidator"/>.</param>
         /// <param name="passwordService">Instance of <see cref="IPassword"/>.</param>
-        public UserController(IDataBase db, IDtoValidator validator, IPassword passwordService)
+        /// <param name="bodyBuilder">Instance of <see cref="IResponseBodyBuilder"/>.</param>
+        public UserController(
+            IDataBase db,
+            IDtoValidator validator,
+            IPassword passwordService,
+            IResponseBodyBuilder bodyBuilder)
         {
             _db = db;
             _validator = validator;
             _passwordService = passwordService;
+            _bodyBuilder = bodyBuilder;
         }
 
         /// <summary>
@@ -81,16 +83,16 @@ namespace CriminalCheckerBackend.Controllers
                     .ConfigureAwait(false);
             }
             catch (InvalidDtoException exception) {
-                return BadRequest(BuildResponseBody(exception));
+                return BadRequest(_bodyBuilder.Build(exception));
             }
             catch (UserExistsException) {
-                return BadRequest(new Dictionary<string, dynamic> { { ErrorUnknown, false }, { ErrorType, "ExistsAlready" } });
+                return BadRequest(_bodyBuilder.Build("ExistsAlready"));
             }
             catch (FileNotFoundException) {
-                return Unauthorized(new Dictionary<string, bool> { { ErrorUnknown, false } });
+                return Unauthorized(_bodyBuilder.Build());
             }
             catch {
-                return BadRequest(new Dictionary<string, bool>{ { ErrorUnknown, true } });
+                return BadRequest(_bodyBuilder.Build(string.Empty));
             }
         }
 
@@ -137,13 +139,13 @@ namespace CriminalCheckerBackend.Controllers
                 return Ok();
             }
             catch (InvalidDtoException exception) {
-                return BadRequest(BuildResponseBody(exception));
+                return BadRequest((_bodyBuilder.Build(exception)));
             }
             catch (FileNotFoundException) {
-                return Unauthorized(new Dictionary<string, bool> { { ErrorUnknown, false } });
+                return Unauthorized(_bodyBuilder.Build());
             }
             catch {
-                return BadRequest(new Dictionary<string, bool> { { ErrorUnknown, true } });
+                return BadRequest(_bodyBuilder.Build(string.Empty));
             }
         }
 
@@ -166,22 +168,6 @@ namespace CriminalCheckerBackend.Controllers
             catch {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        /// <summary>
-        /// Build body for response.
-        /// </summary>
-        /// <param name="exception"><see cref="InvalidDtoException"/>.</param>
-        /// <returns>Result body.</returns>
-        private Dictionary<string, dynamic> BuildResponseBody(InvalidDtoException exception)
-        {
-            return new Dictionary<string, dynamic>
-            {
-                { ErrorUnknown, false },
-                { ErrorType, "BadProperty" },
-                { "property", exception.Property },
-                { "details", exception.Details }
-            };
         }
     }
 }

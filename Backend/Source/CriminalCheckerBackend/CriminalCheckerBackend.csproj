@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\Errors\" />
+    <Folder Include="Model\Exceptions\" />
+    <Folder Include="Services\ResponseBody\" />
   </ItemGroup>
 
 </Project>

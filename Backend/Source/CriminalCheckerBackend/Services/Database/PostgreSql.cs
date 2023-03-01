@@ -30,8 +30,7 @@ namespace CriminalCheckerBackend.Services.Database
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-
-            CheckUserInput(ref user);
+            
             return await Drinkers.AnyAsync(u =>
                 u.UserName == user.Name 
                 && u.Surname == user.Surname 
@@ -70,19 +69,6 @@ namespace CriminalCheckerBackend.Services.Database
             modelBuilder.Entity<Drinker>().HasIndex(drinker => drinker.UserId).IsUnique();
             modelBuilder.Entity<RegisteredUser>().HasIndex(user => user.UserId).IsUnique();
             modelBuilder.Entity<RegisteredUser>().Property(f => f.UserId).ValueGeneratedOnAdd();
-        }
-
-        /// <summary>
-        /// Checking <see cref="DrinkerDto"/> instance.
-        /// </summary>
-        /// <param name="user"><see cref="DrinkerDto"/>.</param>
-        private void CheckUserInput(ref DrinkerDto user)
-        {
-            if (string.IsNullOrWhiteSpace(user.Name))
-                throw new NewUserNotValidValueException(nameof(user.Name), string.Empty);
-
-            if (string.IsNullOrWhiteSpace(user.Surname))
-                throw new NewUserNotValidValueException(nameof(user.Surname), string.Empty);
         }
     }
 }

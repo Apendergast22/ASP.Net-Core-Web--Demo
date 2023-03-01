@@ -31,7 +31,6 @@ public interface IDataBase
     /// </summary>
     /// <param name="user"><see cref="DrinkerDto"/>.</param>
     /// <returns><see cref="Task"/> for calculating value, that shows target user is drinker.</returns>
-    /// <exception cref="NewUserNotValidValueException"></exception>
     Task<bool> DoesUserDrinkerAsync([NotNull] DrinkerDto user);
 
     /// <summary>
@@ -39,7 +38,6 @@ public interface IDataBase
     /// </summary>
     /// <param name="id">User identifier.</param>
     /// <returns><see cref="Task"/> for calculating value, that shows target user is drinker.</returns>
-    /// <exception cref="NewUserNotValidValueException"></exception>
     Task<bool> DoesUserDrinkerAsync(int id);
 
     /// <summary>
@@ -47,7 +45,6 @@ public interface IDataBase
     /// </summary>
     /// <param name="data"><see cref="NewUserInfo"/>.</param>
     /// <returns><see cref="Task"/>.</returns>
-    /// <exception cref="NewUserNotValidValueException"></exception>
     /// <exception cref="UserExistsException"></exception>
     Task RegistrationNewUserAsync([NotNull] NewUserInfo data);
 }
