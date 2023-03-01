@@ -32,6 +32,8 @@ public class OptionsSetup : IConfigureOptions<DataBaseInfo>, IConfigureOptions<P
     /// <inheritdoc />
     public void Configure(PasswordServiceInfo options)
     {
-        options.PathToSalt = _configuration.GetConnectionString("PathToSalt");
+        options.PathToSalt = _configuration.GetSection("PathToSalt").Value;
+        var count = _configuration.GetSection("ItemsCount").Value ?? throw new NullReferenceException("Can't get items count from application settings file.");
+        options.ItemsCount = int.Parse(count);
     }
 }

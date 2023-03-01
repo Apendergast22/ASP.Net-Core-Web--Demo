@@ -76,6 +76,9 @@ public class PasswordService : IPassword
     /// <returns>Salt.</returns>
     private byte[] ReadSalt()
     {
+        if (!File.Exists(_pathToSalt))
+            throw new FileNotFoundException();
+
         var skip = Random.Shared.Next(0, _saltItemsCount - 2);
         return Encoding.UTF8.GetBytes(File.ReadAllLines(_pathToSalt, Encoding.UTF8).Skip(skip).Take(1).Single());
     }
