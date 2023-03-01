@@ -2,6 +2,7 @@ using CriminalCheckerBackend.Model.Config;
 using CriminalCheckerBackend.Services;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.Password;
+using CriminalCheckerBackend.Services.Validator;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -43,8 +44,13 @@ void RegisterDependencies(WebApplicationBuilder builder)
         if (passwordOptions == null)
             throw new ArgumentNullException(nameof(passwordOptions));
 
-        return new PasswordService(passwordOptions.PathToSalt);
+        if (passwordOptions.PathToSalt == null)
+            throw new ArgumentNullException(nameof(passwordOptions.PathToSalt));
+        
+        return new PasswordService(passwordOptions.PathToSalt, passwordOptions.ItemsCount);
     });
+
+    builder.Services.AddScoped<IDtoValidator>(provider => new DtoValidator());
 }
 
 // Configure authentication.
