@@ -1,8 +1,11 @@
-using CriminalCheckerBackend.Model;
+using CriminalCheckerBackend.Model.Config;
 using CriminalCheckerBackend.Services;
 using CriminalCheckerBackend.Services.Database;
+using CriminalCheckerBackend.Services.Password;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using PasswordService = CriminalCheckerBackend.Services.Password.PasswordService;
 
 #if DEBUG
 ConfigureDebug();
@@ -10,7 +13,8 @@ ConfigureDebug();
 ConfigureRelease();
 #endif
 
-// Registry dependencies
+
+// Registry dependencies.
 void RegisterDependencies(WebApplicationBuilder builder)
 {
     if (builder == null)
@@ -32,12 +36,31 @@ void RegisterDependencies(WebApplicationBuilder builder)
 
         options.EnableDetailedErrors(dataBaseOptions.EnableDetailedErrors);
     });
+
+    builder.Services.AddScoped<IPassword>(provider =>
+    {
+        var passwordOptions = provider.GetService<IOptions<PasswordServiceInfo>>()?.Value;
+        if (passwordOptions == null)
+            throw new ArgumentNullException(nameof(passwordOptions));
+
+        return new PasswordService(passwordOptions.PathToSalt);
+    });
 }
 
-// Configure debug server 
-void ConfigureDebug()
+// Configure authentication.
+void ConfigureAuthentication(WebApplicationBuilder builder)
 {
-    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/signin";
+            options.LogoutPath = "/signout";
+        });
+}
+
+// Disable CORS control.
+void ConfigureNoCors(WebApplicationBuilder builder)
+{
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("CORS_Policy", policyBuilder =>
@@ -49,6 +72,14 @@ void ConfigureDebug()
     });
 
     builder.Services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
+}
+
+// Configure debug server.
+void ConfigureDebug()
+{
+    var builder = WebApplication.CreateBuilder(args);
+    ConfigureAuthentication(builder);
+    ConfigureNoCors(builder);
 
     RegisterDependencies(builder);
     // Add services to the container.
@@ -56,14 +87,16 @@ void ConfigureDebug()
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGenNewtonsoftSupport();
 
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
-    
-    app.UseAuthorization();
+
+    app.UseAuthentication();    // Checking who is connected user.
+    app.UseAuthorization();     // Checking what permissions has connected user.
     app.MapControllers();
     app.UseCors("CORS_Policy");
     app.Run();
@@ -75,6 +108,7 @@ void ConfigureRelease()
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    ConfigureAuthentication(builder);
     RegisterDependencies(builder);
     // Add services to the container.
     builder.Services.AddControllers();
@@ -82,8 +116,12 @@ void ConfigureRelease()
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
+    // Add support special Newtonsoft for swagger.
+    builder.Services.AddSwaggerGenNewtonsoftSupport();
+
     var app = builder.Build();
     app.UseHttpsRedirection();
+    app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
     app.Run();
