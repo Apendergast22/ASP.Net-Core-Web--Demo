@@ -1,15 +1,19 @@
 using CriminalCheckerBackend.Model.DataBase.Exceptions;
 using CriminalCheckerBackend.Model.DTO;
 using CriminalCheckerBackend.Services.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ILogger = NLog.ILogger;
 
 namespace CriminalCheckerBackend.Controllers
 {
+    /// <summary>
+    /// Check users controller.
+    /// </summary>
     [ApiController]
-    [Route("[controller]")]
-    public class DrinkersController : ControllerBase
+    [Route("api/[controller]")]
+    public class CheckController : ControllerBase
     {
         /// <summary>
         /// Current class logger.
@@ -22,16 +26,25 @@ namespace CriminalCheckerBackend.Controllers
         private readonly IDataBase _db;
 
         /// <summary>
-        /// Instance new object of <see cref="DrinkersController"/>.
+        /// Instance new object of <see cref="CheckController"/>.
         /// </summary>
         /// <param name="db">Instance of <see cref="IDataBase"/>.</param>
-        public DrinkersController(IDataBase db)
+        public CheckController(IDataBase db)
         {
             _db = db;
         }
 
-        [HttpPost(Name = "SendPotentialDrinker")]
-        public async Task<IActionResult> CheckTargetUser([FromBody]UserRequest userInfo)
+        /// <summary>
+        /// Getting info about user from drinkers data base.
+        /// </summary>
+        /// <param name="userInfo">Information about target user.</param>
+        /// <returns><see cref="Task"/> for response.</returns>
+        /// <response code="200">Returns value is indicated that user is drinker.</response>
+        /// <response code="400">Returns if requested data was invalidate/</response>
+        [HttpPost("~/drinker")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CheckUserInDrinkersAsync([FromBody]UserRequest userInfo)
         {
             if (Log.IsInfoEnabled)
                 Log.Info($"User {userInfo.Surname} {userInfo.Name} {userInfo.Patronymic} worries about their drink status");
@@ -58,6 +71,21 @@ namespace CriminalCheckerBackend.Controllers
             {
                 return BadRequest("Unknown error");
             }
+        }
+
+        /// <summary>
+        /// Get police routing time.
+        /// </summary>
+        /// <returns><see cref="Task"/> for response.</returns>
+        /// <response code="200">Returns value is indicated that user is drinker.</response>
+        /// <response code="400">Returns if requested data was invalidate.</response>
+        [Authorize()]
+        [HttpPost("~/criminal")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CheckUserInCriminalAsync()
+        {
+            return Ok(new Dictionary<string, ulong> { { "policeRouteTimeInMinutes", 100UL } });
         }
     }
 }

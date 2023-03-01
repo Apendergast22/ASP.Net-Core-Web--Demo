@@ -1,4 +1,4 @@
-﻿namespace CriminalCheckerBackend.Model;
+﻿namespace CriminalCheckerBackend.Model.Config;
 
 /// <summary>
 /// Model of information from application json.

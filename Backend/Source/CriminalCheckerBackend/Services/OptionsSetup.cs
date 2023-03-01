@@ -1,4 +1,4 @@
-﻿using CriminalCheckerBackend.Model;
+﻿using CriminalCheckerBackend.Model.Config;
 using Microsoft.Extensions.Options;
 
 namespace CriminalCheckerBackend.Services;
@@ -6,7 +6,7 @@ namespace CriminalCheckerBackend.Services;
 /// <summary>
 /// Setup info from application config.
 /// </summary>
-public class OptionsSetup : IConfigureOptions<DataBaseInfo>
+public class OptionsSetup : IConfigureOptions<DataBaseInfo>, IConfigureOptions<PasswordServiceInfo>
 {
     /// <summary>
     /// Configuration service.
@@ -27,5 +27,11 @@ public class OptionsSetup : IConfigureOptions<DataBaseInfo>
     {
         options.ConnectionString = _configuration.GetConnectionString("MainDataBase");
         _configuration.GetSection("DatabaseOption").Bind(options);
+    }
+
+    /// <inheritdoc />
+    public void Configure(PasswordServiceInfo options)
+    {
+        options.PathToSalt = _configuration.GetConnectionString("PathToSalt");
     }
 }

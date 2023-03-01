@@ -28,9 +28,9 @@ public interface IDataBase
     /// <summary>
     /// Registration new user.
     /// </summary>
-    /// <param name="data"><see cref="UserRegistrationData"/>.</param>
+    /// <param name="data"><see cref="SignUpDto"/>.</param>
     /// <returns><see cref="Task"/>.</returns>
     /// <exception cref="NewUserNotValidValueException"></exception>
     /// <exception cref="UserExistsException"></exception>
-    Task RegistrationNewUserAsync([NotNull] UserRegistrationData data);
+    Task RegistrationNewUserAsync([NotNull] SignUpDto data);
 }

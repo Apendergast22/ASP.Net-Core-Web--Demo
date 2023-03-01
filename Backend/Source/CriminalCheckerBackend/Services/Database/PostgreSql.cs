@@ -36,7 +36,7 @@ namespace CriminalCheckerBackend.Services.Database
         }
 
         /// <inheritdoc />
-        public Task RegistrationNewUserAsync(UserRegistrationData data)
+        public Task RegistrationNewUserAsync(SignUpDto data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
