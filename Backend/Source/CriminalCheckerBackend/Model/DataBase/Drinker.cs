@@ -1,25 +1,31 @@
 ﻿namespace CriminalCheckerBackend.Model.DataBase;
 
 /// <summary>
-/// Database user model.
+/// Database drinker model.
 /// </summary>
-public class UserData
+public class Drinker : BaseUserEntity
 {
     /// <summary>
-    /// Default constructor.
+    /// Create new instance <see cref="Drinker"/>.
     /// </summary>
-    public UserData()
+    /// <param name="id">User identifier.</param>
+    public Drinker(int id) : base(id)
     {
+        UserName = string.Empty;
+        Surname = string.Empty;
+        Patronymic = string.Empty;
+        BirthDay = DateOnly.FromDateTime(DateTime.Today);
     }
 
     /// <summary>
-    /// Instancing <see cref="UserData"/>.
+    /// Instancing <see cref="Drinker"/>.
     /// </summary>
+    /// <param name="id">User identifier.</param>
     /// <param name="userName">User's name.</param>
     /// <param name="surname">User's surname.</param>
     /// <param name="patronymic">User's patronymic.</param>
     /// <param name="birthDay">User's birth day.</param>
-    public UserData(string userName, string surname, string patronymic, DateTime birthDay)
+    public Drinker(int id, string userName, string surname, string patronymic, DateTime birthDay) : base(id)
     {
         UserName = userName;
         Surname = surname;

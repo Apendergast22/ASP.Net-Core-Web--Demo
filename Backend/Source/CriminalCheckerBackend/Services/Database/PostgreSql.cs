@@ -1,4 +1,5 @@
-﻿using CriminalCheckerBackend.Model.DataBase;
+﻿using CriminalCheckerBackend.Model;
+using CriminalCheckerBackend.Model.DataBase;
 using CriminalCheckerBackend.Model.DataBase.Exceptions;
 using CriminalCheckerBackend.Model.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -19,16 +20,19 @@ namespace CriminalCheckerBackend.Services.Database
         }
         
         /// <inheritdoc />
-        public DbSet<UserData> UserDataValues { get; set; } = null!;
+        public DbSet<Drinker> Drinkers { get; set; } = null!;
 
         /// <inheritdoc />
-        public async Task<bool> DoesUserDrinkerAsync(UserRequest user)
+        public DbSet<RegisteredUser> RegisteredUsers { get; set; } = null!;
+
+        /// <inheritdoc />
+        public async Task<bool> DoesUserDrinkerAsync(DrinkerDto user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             CheckUserInput(ref user);
-            return await UserDataValues.AnyAsync(u =>
+            return await Drinkers.AnyAsync(u =>
                 u.UserName == user.Name 
                 && u.Surname == user.Surname 
                 && u.Patronymic == user.Patronymic 
@@ -36,25 +40,43 @@ namespace CriminalCheckerBackend.Services.Database
         }
 
         /// <inheritdoc />
-        public Task RegistrationNewUserAsync(SignUpDto data)
+        public async Task<bool> DoesUserDrinkerAsync(int id)
+        {
+            return await Drinkers.AnyAsync(u => u.UserId == id).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task RegistrationNewUserAsync(NewUserInfo data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            throw new NotImplementedException();
+            if (await RegisteredUsers.AnyAsync(u => u.Email == data.Email))
+                throw new UserExistsException();
+
+            var drinker = await Drinkers.SingleOrDefaultAsync(u =>
+                u.UserName == data.Name
+                && u.Surname == data.Surname
+                && u.Patronymic == data.Patronymic
+                && u.BirthDay == DateOnly.FromDateTime(data.BirthDay)).ConfigureAwait(false);
+
+            if (drinker != null)
+                drinker.UserId = 1;
         }
         
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserData>().HasNoKey();
+            modelBuilder.Entity<Drinker>().HasIndex(drinker => drinker.UserId).IsUnique();
+            modelBuilder.Entity<RegisteredUser>().HasIndex(user => user.UserId).IsUnique();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.UserId).ValueGeneratedOnAdd();
         }
 
         /// <summary>
-        /// Checking <see cref="UserRequest"/> instance.
+        /// Checking <see cref="DrinkerDto"/> instance.
         /// </summary>
-        /// <param name="user"><see cref="UserRequest"/>.</param>
-        private void CheckUserInput(ref UserRequest user)
+        /// <param name="user"><see cref="DrinkerDto"/>.</param>
+        private void CheckUserInput(ref DrinkerDto user)
         {
             if (string.IsNullOrWhiteSpace(user.Name))
                 throw new NewUserNotValidValueException(nameof(user.Name), string.Empty);
