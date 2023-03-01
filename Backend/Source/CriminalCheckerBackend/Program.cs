@@ -59,6 +59,7 @@ void ConfigureAuthentication(WebApplicationBuilder builder)
     builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
         {
+            options.ExpireTimeSpan = TimeSpan.FromHours(2);
             options.LoginPath = "/signin";
             options.LogoutPath = "/signout";
         });

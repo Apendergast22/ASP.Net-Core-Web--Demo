@@ -1,6 +1,7 @@
 ﻿
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace CriminalCheckerBackend.Model.DTO;
 
@@ -36,12 +37,14 @@ public class DrinkerDto
     /// <summary>
     /// Get or set user's name.
     /// </summary>
+    [Required]
     [JsonProperty("name")]
     public string Name { get; set; }
 
     /// <summary>
     /// Get or set user's surname.
     /// </summary>
+    [Required]
     [JsonProperty("surname")]
     public string Surname { get; set; }
 
@@ -54,6 +57,7 @@ public class DrinkerDto
     /// <summary>
     /// Get or set user's birth day.
     /// </summary>
+    [Required]
     [JsonProperty("date")]
     public DateTime BirthDay { get; set; }
 }
