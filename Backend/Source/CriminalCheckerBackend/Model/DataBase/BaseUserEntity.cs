@@ -1,4 +1,8 @@
-﻿namespace CriminalCheckerBackend.Model.DataBase;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CriminalCheckerBackend.Model.DataBase;
 
 /// <summary>
 /// Base user database  model.
@@ -24,6 +28,8 @@ public abstract class BaseUserEntity
     /// <summary>
     /// Get or set user id.
     /// </summary>
+    [Key]
+    [Column("UserId", TypeName = "integer")]
     public int UserId { get; set; }
 
 }

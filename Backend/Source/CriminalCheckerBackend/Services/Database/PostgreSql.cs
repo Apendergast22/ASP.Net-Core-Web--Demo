@@ -26,6 +26,13 @@ namespace CriminalCheckerBackend.Services.Database
         public DbSet<RegisteredUser> RegisteredUsers { get; set; } = null!;
 
         /// <inheritdoc />
+        public void RecreateDataBase()
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
+
+        /// <inheritdoc />
         public async Task<bool> DoesUserDrinkerAsync(DrinkerDto user)
         {
             if (user == null)
@@ -53,6 +60,7 @@ namespace CriminalCheckerBackend.Services.Database
             if (await RegisteredUsers.AnyAsync(u => u.Email == data.Email))
                 throw new UserExistsException();
 
+            await RegisteredUsers.AddAsync(new RegisteredUser(data)).ConfigureAwait(false);
             var drinker = await Drinkers.SingleOrDefaultAsync(u =>
                 u.UserName == data.Name
                 && u.Surname == data.Surname
@@ -61,14 +69,25 @@ namespace CriminalCheckerBackend.Services.Database
 
             if (drinker != null)
                 drinker.UserId = 1;
+
+            await SaveChangesAsync().ConfigureAwait(false);
         }
-        
+
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Drinker>().HasIndex(drinker => drinker.UserId).IsUnique();
+            modelBuilder.Entity<Drinker>().HasNoKey();
+
             modelBuilder.Entity<RegisteredUser>().HasIndex(user => user.UserId).IsUnique();
             modelBuilder.Entity<RegisteredUser>().Property(f => f.UserId).ValueGeneratedOnAdd();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Address).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.City).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.BirthDay).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Email).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Hash).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Name).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Surname).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Patronymic).IsRequired();
         }
     }
 }

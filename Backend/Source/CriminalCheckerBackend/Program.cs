@@ -144,6 +144,12 @@ void ConfigureDebug()
     app.UseAuthorization();     // Checking what permissions has connected user.
     app.MapControllers();
     app.UseCors("CORS_Policy");
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<IDataBase>();
+        context.RecreateDataBase();
+    }
+        
     app.Run();
 }
 

@@ -27,6 +27,11 @@ public interface IDataBase
     public DbSet<RegisteredUser> RegisteredUsers { get; set; }
 
     /// <summary>
+    /// Recreation data base.
+    /// </summary>
+    public void RecreateDataBase();
+
+    /// <summary>
     /// Checking user in drinkers collection.
     /// </summary>
     /// <param name="user"><see cref="DrinkerDto"/>.</param>
