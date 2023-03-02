@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CriminalCheckerBackend.Model.DTO;
 
 /// <summary>
-/// User info model.
+/// Drinker request DTO.
 /// </summary>
 public class DrinkerDto
 {

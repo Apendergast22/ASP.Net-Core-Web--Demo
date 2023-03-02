@@ -1,12 +1,14 @@
 using CriminalCheckerBackend.Model.DTO;
 using CriminalCheckerBackend.Model.Errors;
+using CriminalCheckerBackend.Model.Exceptions;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.ResponseBody;
+using CriminalCheckerBackend.Services.TomTomApi.Route;
 using CriminalCheckerBackend.Services.Validator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NLog;
-using System;
 using ILogger = NLog.ILogger;
 
 namespace CriminalCheckerBackend.Controllers
@@ -39,16 +41,27 @@ namespace CriminalCheckerBackend.Controllers
         private readonly IResponseBodyBuilder _bodyBuilder;
 
         /// <summary>
+        /// Instance of <see cref="IRouteCalculator"/>.
+        /// </summary>
+        private readonly IRouteCalculator _routeCalculator;
+
+        /// <summary>
         /// Instance new object of <see cref="CheckController"/>.
         /// </summary>
         /// <param name="db">Instance of <see cref="IDataBase"/>.</param>
         /// <param name="validator">Instance of <see cref="IDtoValidator"/>.</param>
         /// <param name="bodyBuilder">Instance of <see cref="IResponseBodyBuilder"/>.</param>
-        public CheckController(IDataBase db, IDtoValidator validator, IResponseBodyBuilder bodyBuilder)
+        /// <param name="routeCalculator">Instance of <see cref="IRouteCalculator"/>.</param>
+        public CheckController(
+            IDataBase db,
+            IDtoValidator validator,
+            IResponseBodyBuilder bodyBuilder,
+            IRouteCalculator routeCalculator)
         {
             _db = db;
             _validator = validator;
             _bodyBuilder = bodyBuilder;
+            _routeCalculator = routeCalculator;
         }
 
         /// <summary>
@@ -89,13 +102,39 @@ namespace CriminalCheckerBackend.Controllers
         /// <returns><see cref="Task"/> for response.</returns>
         /// <response code="200">Returns value is indicated that user is drinker.</response>
         /// <response code="400">Returns if requested data was invalidate.</response>
-        [Authorize()]
-        [HttpPost("~/criminal")]
+        /// <response code="401">Returns if user didn't find.</response>
+        [Authorize]
+        [HttpPost("~/criminal/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CheckUserInCriminalAsync()
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CheckUserInCriminalAsync(int id)
         {
-            return Ok(new Dictionary<string, ulong> { { "policeRouteTimeInMinutes", 100UL } });
+            if (Log.IsInfoEnabled)
+                Log.Info($"User with ID = {id} wan't to learn their criminal status");
+
+            try {
+                var user = await _db.RegisteredUsers.SingleOrDefaultAsync(u => u.UserId == id).ConfigureAwait(false);
+                if (user == null)
+                    return Unauthorized(_bodyBuilder.Build("Can't find user"));
+
+                return Ok(new Dictionary<string, int>
+                {
+                    {
+                        "policeRouteTimeInMinutes",
+                        await _routeCalculator.CalculateRouteAsync(user.City, user.Address).ConfigureAwait(false)
+                    }
+                });
+            }
+            catch (DaDataNotFoundException) {
+                return BadRequest(_bodyBuilder.Build("UserAddressNotFound"));
+            }
+            catch (TomTomException) {
+                return BadRequest(_bodyBuilder.Build("RouteTimeNotFound"));
+            }
+            catch {
+                return BadRequest(_bodyBuilder.Build());
+            }
         }
     }
 }

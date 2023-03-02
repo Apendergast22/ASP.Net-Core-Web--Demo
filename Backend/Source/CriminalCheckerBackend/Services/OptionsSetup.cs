@@ -6,7 +6,11 @@ namespace CriminalCheckerBackend.Services;
 /// <summary>
 /// Setup info from application config.
 /// </summary>
-public class OptionsSetup : IConfigureOptions<DataBaseInfo>, IConfigureOptions<PasswordServiceInfo>
+public class OptionsSetup :
+    IConfigureOptions<DataBaseInfo>,
+    IConfigureOptions<PasswordServiceInfo>,
+    IConfigureOptions<TomTomInfo>,
+    IConfigureOptions<DaDataInfo>
 {
     /// <summary>
     /// Configuration service.
@@ -35,5 +39,17 @@ public class OptionsSetup : IConfigureOptions<DataBaseInfo>, IConfigureOptions<P
         options.PathToSalt = _configuration.GetSection("PathToSalt").Value;
         var count = _configuration.GetSection("ItemsCount").Value ?? throw new NullReferenceException("Can't get items count from application settings file.");
         options.ItemsCount = int.Parse(count);
+    }
+
+    /// <inheritdoc />
+    public void Configure(TomTomInfo options)
+    {
+        _configuration.GetSection("TomTom").Bind(options);
+    }
+
+    /// <inheritdoc />
+    public void Configure(DaDataInfo options)
+    {
+        _configuration.GetSection("DaData").Bind(options);
     }
 }

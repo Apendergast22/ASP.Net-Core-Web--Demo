@@ -2,8 +2,10 @@ using CriminalCheckerBackend.Model.Config;
 using CriminalCheckerBackend.Services;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.Password;
-using CriminalCheckerBackend.Services.Route;
+using CriminalCheckerBackend.Services.TomTomApi;
+using CriminalCheckerBackend.Services.TomTomApi.Route;
 using CriminalCheckerBackend.Services.Validator;
+using Dadata;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -43,16 +45,48 @@ void RegisterDependencies(WebApplicationBuilder builder)
     {
         var passwordOptions = provider.GetService<IOptions<PasswordServiceInfo>>()?.Value;
         if (passwordOptions == null)
-            throw new ArgumentNullException(nameof(passwordOptions));
-
+            throw new NullReferenceException(nameof(passwordOptions));
         if (passwordOptions.PathToSalt == null)
-            throw new ArgumentNullException(nameof(passwordOptions.PathToSalt));
+            throw new NullReferenceException(nameof(passwordOptions.PathToSalt));
         
         return new PasswordService(passwordOptions.PathToSalt, passwordOptions.ItemsCount);
     });
 
     builder.Services.AddScoped<IDtoValidator>(_ => new DtoValidator());
-    builder.Services.AddScoped<IRouteCalculator>(_ => new RouteCalculator());
+    builder.Services.AddScoped<IRouteCalculator>(provider =>
+    {
+        var cleanClient = provider.GetService<ICleanClientAsync>() ?? throw new NullReferenceException(nameof(TomTomUriBuilder));
+        var uriBuilder = provider.GetService<TomTomUriBuilder>() ?? throw new NullReferenceException(nameof(TomTomUriBuilder));
+        return new Client(uriBuilder, cleanClient);
+    });
+    
+    builder.Services.AddScoped(provider =>
+    {
+        var tomTomOptions = provider.GetService<IOptions<TomTomInfo>>()?.Value;
+        if (tomTomOptions == null)
+            throw new NullReferenceException(nameof(tomTomOptions));
+        if (string.IsNullOrWhiteSpace(tomTomOptions.BaseUri))
+            throw new NullReferenceException(nameof(tomTomOptions.BaseUri));
+        if (string.IsNullOrWhiteSpace(tomTomOptions.Token))
+            throw new NullReferenceException(nameof(tomTomOptions.Token));
+
+        return new TomTomUriBuilder(tomTomOptions.BaseUri, tomTomOptions.Token);
+    });
+
+    builder.Services.AddScoped<ICleanClientAsync>(provider =>
+    {
+        var daDataOptions = provider.GetService<DaDataInfo>();
+        if (daDataOptions == null)
+            throw new NullReferenceException(nameof(daDataOptions));
+        if (string.IsNullOrWhiteSpace(daDataOptions.ApiKey))
+            throw new NullReferenceException(nameof(daDataOptions.ApiKey));
+        if (string.IsNullOrWhiteSpace(daDataOptions.SecretKey))
+            throw new NullReferenceException(nameof(daDataOptions.SecretKey));
+
+        return string.IsNullOrWhiteSpace(daDataOptions.BaseUri) 
+            ? new CleanClientAsync(daDataOptions.ApiKey, daDataOptions.SecretKey) 
+            : new CleanClientAsync(daDataOptions.ApiKey, daDataOptions.SecretKey, daDataOptions.BaseUri);
+    });
 }
 
 // Configure authentication.
@@ -84,7 +118,9 @@ void ConfigureNoCors(WebApplicationBuilder builder)
 }
 
 // Configure debug server.
+#pragma warning disable CS8321
 void ConfigureDebug()
+#pragma warning restore CS8321
 {
     var builder = WebApplication.CreateBuilder(args);
     ConfigureAuthentication(builder);
@@ -112,8 +148,10 @@ void ConfigureDebug()
 }
 
 
-// Configure release server 
+// Configure release server.
+#pragma warning disable CS8321
 void ConfigureRelease()
+#pragma warning restore CS8321
 {
     var builder = WebApplication.CreateBuilder(args);
 

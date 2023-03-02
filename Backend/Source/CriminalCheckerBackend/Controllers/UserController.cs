@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using ILogger = NLog.ILogger;
 
 namespace CriminalCheckerBackend.Controllers
 {
@@ -22,6 +24,11 @@ namespace CriminalCheckerBackend.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
+        /// <summary>
+        /// Current class logger.
+        /// </summary>
+        private static readonly ILogger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Instance of <see cref="IDataBase"/>.
         /// </summary>
@@ -109,6 +116,7 @@ namespace CriminalCheckerBackend.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SignInUserAsync([FromBody] SignInDto dto)
         {
+            // Log
             try {
                 _validator.Validate(dto);
                 var user = await _db.RegisteredUsers
@@ -161,6 +169,7 @@ namespace CriminalCheckerBackend.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SignOutUserAsync([FromBody] SignInDto dto)
         {
+            // Log
             try {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return Ok();
