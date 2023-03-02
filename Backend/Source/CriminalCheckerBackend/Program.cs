@@ -2,6 +2,7 @@ using CriminalCheckerBackend.Model.Config;
 using CriminalCheckerBackend.Services;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.Password;
+using CriminalCheckerBackend.Services.ResponseBody;
 using CriminalCheckerBackend.Services.TomTomApi;
 using CriminalCheckerBackend.Services.TomTomApi.Route;
 using CriminalCheckerBackend.Services.Validator;
@@ -9,6 +10,7 @@ using Dadata;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using PasswordService = CriminalCheckerBackend.Services.Password.PasswordService;
 
 #if DEBUG
@@ -87,6 +89,8 @@ void RegisterDependencies(WebApplicationBuilder builder)
             ? new CleanClientAsync(daDataOptions.ApiKey, daDataOptions.SecretKey) 
             : new CleanClientAsync(daDataOptions.ApiKey, daDataOptions.SecretKey, daDataOptions.BaseUri);
     });
+
+    builder.Services.AddScoped<IResponseBodyBuilder>(_ => new ResponseBodyBuilder());
 }
 
 // Configure authentication.
@@ -127,11 +131,15 @@ void ConfigureDebug()
     ConfigureNoCors(builder);
 
     RegisterDependencies(builder);
+
     // Add services to the container.
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddNewtonsoftJson();
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+
+    builder.Services.AddMvc();
+    builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Users checker", Version = "v1" }); });
     builder.Services.AddSwaggerGenNewtonsoftSupport();
 
     var app = builder.Build();
@@ -163,11 +171,12 @@ void ConfigureRelease()
 
     ConfigureAuthentication(builder);
     RegisterDependencies(builder);
+
     // Add services to the container.
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddNewtonsoftJson();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Users checker", Version = "v1" }); });
 
     // Add support special Newtonsoft for swagger.
     builder.Services.AddSwaggerGenNewtonsoftSupport();
