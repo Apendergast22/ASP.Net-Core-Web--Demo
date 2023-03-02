@@ -70,7 +70,7 @@ namespace CriminalCheckerBackend.Controllers
         /// <returns><see cref="Task"/> for response.</returns>
         /// <response code="200">Returns value is indicated that user is drinker.</response>
         /// <response code="400">Returns if requested data was invalidate/</response>
-        [HttpPost("~/drinker")]
+        [HttpGet("~/drinker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CheckUserInDrinkersAsync([FromBody]DrinkerDto userInfo)
@@ -103,7 +103,7 @@ namespace CriminalCheckerBackend.Controllers
         /// <response code="400">Returns if requested data was invalidate.</response>
         /// <response code="401">Returns if user didn't find.</response>
         [Authorize]
-        [HttpPost("~/criminal/{id}")]
+        [HttpGet("~/criminal/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -47,6 +47,7 @@ public class SignUpDto
     /// Get or set user's birth day.
     /// </summary>
     [JsonProperty("date")]
+    [Required]
     public DateTime BirthDay { get; set; }
 
     /// <summary>
