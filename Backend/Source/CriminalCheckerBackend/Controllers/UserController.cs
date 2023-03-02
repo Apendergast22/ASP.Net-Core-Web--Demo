@@ -2,7 +2,7 @@
 using CriminalCheckerBackend.Model;
 using CriminalCheckerBackend.Model.DataBase.Exceptions;
 using CriminalCheckerBackend.Model.DTO;
-using CriminalCheckerBackend.Model.Errors;
+using CriminalCheckerBackend.Model.Exceptions;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.Password;
 using CriminalCheckerBackend.Services.ResponseBody;

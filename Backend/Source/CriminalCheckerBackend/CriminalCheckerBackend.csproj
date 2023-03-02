@@ -19,4 +19,10 @@
     <Folder Include="Services\ResponseBody\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Salt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

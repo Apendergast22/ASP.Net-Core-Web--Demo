@@ -1,5 +1,4 @@
 using CriminalCheckerBackend.Model.DTO;
-using CriminalCheckerBackend.Model.Errors;
 using CriminalCheckerBackend.Model.Exceptions;
 using CriminalCheckerBackend.Services.Database;
 using CriminalCheckerBackend.Services.ResponseBody;

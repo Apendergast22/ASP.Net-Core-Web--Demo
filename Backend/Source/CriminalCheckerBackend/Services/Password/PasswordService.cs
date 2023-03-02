@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using CriminalCheckerBackend.Model.Errors;
+using CriminalCheckerBackend.Model.Exceptions;
 using JetBrains.Annotations;
 
 namespace CriminalCheckerBackend.Services.Password;
@@ -10,6 +10,11 @@ namespace CriminalCheckerBackend.Services.Password;
 /// </summary>
 public class PasswordService : IPassword
 {
+    /// <summary>
+    /// Minimal count of items in salt file.
+    /// </summary>
+    private const int MinItemsCount = 20;
+
     /// <summary>
     /// Path to file with salt.
     /// </summary>
@@ -29,6 +34,9 @@ public class PasswordService : IPassword
     {
         if (string.IsNullOrWhiteSpace(pathToSalt))
             throw new ArgumentNullException(nameof(pathToSalt));
+        
+        if (saltItemsCount <= MinItemsCount)
+            throw new ArgumentOutOfRangeException(nameof(saltItemsCount));
 
         _pathToSalt = pathToSalt;
         _saltItemsCount = saltItemsCount;

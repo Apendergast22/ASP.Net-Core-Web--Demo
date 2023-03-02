@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CriminalCheckerBackend", "CriminalCheckerBackend\CriminalCheckerBackend.csproj", "{D40AE89A-FA0C-492C-85F9-CEB031E2C8DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CriminalCheckerBackend.Tests", "CriminalCheckerBackend.Tests\CriminalCheckerBackend.Tests.csproj", "{B29AAD6E-6CFF-419C-826B-FB675AC0A26F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D40AE89A-FA0C-492C-85F9-CEB031E2C8DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D40AE89A-FA0C-492C-85F9-CEB031E2C8DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D40AE89A-FA0C-492C-85F9-CEB031E2C8DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29AAD6E-6CFF-419C-826B-FB675AC0A26F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29AAD6E-6CFF-419C-826B-FB675AC0A26F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29AAD6E-6CFF-419C-826B-FB675AC0A26F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29AAD6E-6CFF-419C-826B-FB675AC0A26F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

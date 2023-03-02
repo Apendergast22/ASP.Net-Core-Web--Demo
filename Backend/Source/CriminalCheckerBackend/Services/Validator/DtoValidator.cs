@@ -1,7 +1,7 @@
 ﻿using CriminalCheckerBackend.Model.DTO;
-using CriminalCheckerBackend.Model.Errors;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using CriminalCheckerBackend.Model.Exceptions;
 
 namespace CriminalCheckerBackend.Services.Validator;
 

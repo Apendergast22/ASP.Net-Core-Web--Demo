@@ -1,4 +1,4 @@
-﻿namespace CriminalCheckerBackend.Model.Errors;
+﻿namespace CriminalCheckerBackend.Model.Exceptions;
 
 /// <summary>
 /// This exception is being throw if validating DTO is invalid.

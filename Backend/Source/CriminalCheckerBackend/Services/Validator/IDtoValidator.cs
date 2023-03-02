@@ -1,5 +1,5 @@
 ﻿using CriminalCheckerBackend.Model.DTO;
-using CriminalCheckerBackend.Model.Errors;
+using CriminalCheckerBackend.Model.Exceptions;
 
 namespace CriminalCheckerBackend.Services.Validator;
 
