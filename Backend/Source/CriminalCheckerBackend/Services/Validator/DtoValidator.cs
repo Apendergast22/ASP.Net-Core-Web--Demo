@@ -31,8 +31,7 @@ public class DtoValidator : IDtoValidator
         CheckNullOrEmpty(nameof(dto.City), "Town", dto.City);
         CheckNullOrEmpty(nameof(dto.Name), "Name", dto.Name);
         CheckNullOrEmpty(nameof(dto.Surname), "Surname", dto.Surname);
-
-        CheckNoSpecial(nameof(dto.Address), "Address", dto.Address);
+        
         CheckNoSpecial(nameof(dto.City), "Town", dto.City);
         CheckNoSpecial(nameof(dto.Name), "Name", dto.Name);
         CheckNoSpecial(nameof(dto.Surname), "Surname", dto.Surname);
