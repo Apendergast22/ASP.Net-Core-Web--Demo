@@ -7,3 +7,6 @@
 /Backend/Source/CriminalCheckerBackend/bin/Debug/net6.0
 /Backend/Source/CriminalCheckerBackend/obj
 /SSL
+/Backend/Source/CriminalCheckerBackend.Tests/bin/Debug/net6.0
+/Backend/Source/CriminalCheckerBackend.Tests/obj
+/Backend/Source/CriminalCheckerBackend/Salt.txt
