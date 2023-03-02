@@ -5,6 +5,7 @@ using Dadata;
 using Dadata.Model;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace CriminalCheckerBackend.Services.TomTomApi;
 
@@ -58,7 +59,7 @@ public class Client : IRouteCalculator
         try {
 
             var dto = JsonConvert.DeserializeObject<RoutingResponseDto>(json) ?? throw new TomTomException();
-            return dto.Routes.Summary.TravelTimeInSeconds;
+            return dto.Routes.FirstOrDefault()?.Summary.TravelTimeInSeconds ?? throw new TomTomException();
         }
         catch {
             throw new TomTomException();
@@ -117,10 +118,13 @@ public class Client : IRouteCalculator
             }
 
             float latitude, longitude;
-            if (float.TryParse(cleanResult.geo_lat, out latitude) && float.TryParse(cleanResult.geo_lon, out longitude))
-                return new Point { Latitude = latitude, Longitude = longitude };
+            if (!float.TryParse(cleanResult.geo_lat, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out latitude))
+                throw new DaDataNotFoundException();
 
-            throw new DaDataNotFoundException();
+            if (!float.TryParse(cleanResult.geo_lon, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out longitude))
+                throw new DaDataNotFoundException();
+            
+            return new Point { Latitude = latitude, Longitude = longitude };
         }
         catch {
             throw new DaDataNotFoundException();

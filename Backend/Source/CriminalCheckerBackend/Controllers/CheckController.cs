@@ -120,7 +120,7 @@ namespace CriminalCheckerBackend.Controllers
                 return Ok(new Dictionary<string, int>
                 {
                     {
-                        "policeRouteTimeInMinutes",
+                        "policeRouteTimeInSeconds",
                         await _routeCalculator.CalculateRouteAsync(user.City, user.Address).ConfigureAwait(false)
                     }
                 });

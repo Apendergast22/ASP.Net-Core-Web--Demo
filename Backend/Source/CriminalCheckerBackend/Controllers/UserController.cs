@@ -81,6 +81,9 @@ namespace CriminalCheckerBackend.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SignUpUserAsync([FromBody] SignUpDto dto)
         {
+            if (Log.IsInfoEnabled)
+                Log.Info($"User \'{dto.Email}\' is trying to sign up.");
+
             try {
                 _validator.Validate(dto);
                 var hashResult = _passwordService.Hash(dto.Password);
@@ -117,7 +120,9 @@ namespace CriminalCheckerBackend.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> SignInUserAsync([FromBody] SignInDto dto)
         {
-            // Log
+            if (Log.IsInfoEnabled)
+                Log.Info($"User \'{dto.Email}\' is trying to sign in.");
+
             try {
                 _validator.Validate(dto);
                 var user = await _db.RegisteredUsers
@@ -171,7 +176,6 @@ namespace CriminalCheckerBackend.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SignOutUserAsync()
         {
-            // Log
             try {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return Ok();

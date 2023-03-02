@@ -14,8 +14,8 @@ public class RoutingResponseDto
     public string FormatVersion { get; set; } = null!;
 
     /// <summary>
-    /// Get or set <see cref="Routes"/>.
+    /// Get or set collection of <see cref="Routes"/>.
     /// </summary>
     [JsonProperty("routes")]
-    public Routes Routes { get; set; } = null!;
+    public ICollection<Routes> Routes { get; set; } = null!;
 }

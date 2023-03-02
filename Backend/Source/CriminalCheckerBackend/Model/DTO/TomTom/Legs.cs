@@ -17,5 +17,5 @@ public class Legs
     /// Get or set collection of <see cref="Point"/>
     /// </summary>
     [JsonProperty("points")]
-    public IEnumerable<Point> Points { get; set; } = null!;
+    public ICollection<Point> Points { get; set; } = null!;
 }

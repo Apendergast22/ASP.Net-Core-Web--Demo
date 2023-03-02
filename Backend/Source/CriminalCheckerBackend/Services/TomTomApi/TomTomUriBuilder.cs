@@ -1,4 +1,5 @@
 ﻿using CriminalCheckerBackend.Model.DTO.TomTom;
+using System.Globalization;
 
 namespace CriminalCheckerBackend.Services.TomTomApi;
 
@@ -61,6 +62,6 @@ public class TomTomUriBuilder
     /// <returns>Geographic point as string.</returns>
     private static string PointToString(Point point)
     {
-        return $"{point.Latitude},{point.Longitude}";
+        return string.Format(CultureInfo.InvariantCulture, "{0},{1}", point.Latitude, point.Longitude);
     }
 }

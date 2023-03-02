@@ -14,14 +14,14 @@ public class Routes
     public Summary Summary { get; set; } = null!;
 
     /// <summary>
-    /// Get or set <see cref="TomTom.Legs"/>.
+    /// Get or set collection of <see cref="TomTom.Legs"/>.
     /// </summary>
     [JsonProperty("legs")]
-    public Legs Legs { get; set; } = null!;
+    public ICollection<Legs> Legs { get; set; } = null!;
 
     /// <summary>
     /// Get or set collection of <see cref="Section"/>.
     /// </summary>
     [JsonProperty("sections")]
-    public IEnumerable<Section> Sections { get; set; } = null!;
+    public ICollection<Section> Sections { get; set; } = null!;
 }

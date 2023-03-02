@@ -77,7 +77,7 @@ void RegisterDependencies(WebApplicationBuilder builder)
 
     builder.Services.AddScoped<ICleanClientAsync>(provider =>
     {
-        var daDataOptions = provider.GetService<DaDataInfo>();
+        var daDataOptions = provider.GetService<IOptions<DaDataInfo>>()?.Value;
         if (daDataOptions == null)
             throw new NullReferenceException(nameof(daDataOptions));
         if (string.IsNullOrWhiteSpace(daDataOptions.ApiKey))
