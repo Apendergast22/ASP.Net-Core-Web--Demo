@@ -37,13 +37,16 @@ public interface IDataBase
     /// <param name="user"><see cref="DrinkerDto"/>.</param>
     /// <returns><see cref="Task"/> for calculating value, that shows target user is drinker.</returns>
     Task<bool> DoesUserDrinkerAsync([NotNull] DrinkerDto user);
-
+    
     /// <summary>
-    /// Checking user in drinkers collection.
+    /// Adding new drinker.
     /// </summary>
-    /// <param name="id">User identifier.</param>
-    /// <returns><see cref="Task"/> for calculating value, that shows target user is drinker.</returns>
-    Task<bool> DoesUserDrinkerAsync(int id);
+    /// <param name="name">Drinker's name.</param>
+    /// <param name="surname">Drinker's surname.</param>
+    /// <param name="patronymic">Drinker's patronymic.</param>
+    /// <param name="birthDay">Drinker's birth day.</param>
+    /// <returns></returns>
+    Task AddNewDrinkerAsync(string name, string surname, string patronymic, DateOnly birthDay);
 
     /// <summary>
     /// Registration new user.

@@ -152,12 +152,11 @@ void ConfigureDebug()
     app.UseAuthorization();     // Checking what permissions has connected user.
     app.MapControllers();
     app.UseCors("CORS_Policy");
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<IDataBase>();
-        context.RecreateDataBase();
-    }
-        
+    
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<IDataBase>();
+    context.RecreateDataBase();
+    context.AddNewDrinkerAsync("User", "User", "User", DateOnly.Parse("1992-03-02"));
     app.Run();
 }
 

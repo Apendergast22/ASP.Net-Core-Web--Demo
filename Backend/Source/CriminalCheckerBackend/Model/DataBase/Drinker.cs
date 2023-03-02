@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CriminalCheckerBackend.Model.DataBase;
 
 /// <summary>
 /// Database drinker model.
 /// </summary>
-public class Drinker : BaseUserEntity
+public class Drinker
 {
     /// <summary>
     /// Empty constructor for entity framework.
@@ -16,18 +17,20 @@ public class Drinker : BaseUserEntity
         Surname = string.Empty;
         Patronymic = string.Empty;
         BirthDay = DateOnly.FromDateTime(DateTime.Today);
+        UserId = -1;
     }
 
     /// <summary>
     /// Create new instance <see cref="Drinker"/>.
     /// </summary>
     /// <param name="id">User identifier.</param>
-    public Drinker(int id) : base(id)
+    public Drinker(int id)
     {
         UserName = string.Empty;
         Surname = string.Empty;
         Patronymic = string.Empty;
         BirthDay = DateOnly.FromDateTime(DateTime.Today);
+        UserId = id;
     }
 
     /// <summary>
@@ -38,13 +41,27 @@ public class Drinker : BaseUserEntity
     /// <param name="surname">User's surname.</param>
     /// <param name="patronymic">User's patronymic.</param>
     /// <param name="birthDay">User's birth day.</param>
-    public Drinker(int id, string userName, string surname, string patronymic, DateTime birthDay) : base(id)
+    public Drinker(int id, string userName, string surname, string patronymic, DateOnly birthDay)
     {
         UserName = userName;
         Surname = surname;
         Patronymic = patronymic;
-        BirthDay = DateOnly.FromDateTime(birthDay);
+        BirthDay = birthDay;
+        UserId = id;
     }
+
+    /// <summary>
+    /// Get or set database index.
+    /// </summary>
+    [Key]
+    [Column("Index", TypeName = "integer")]
+    public int Index { get; set; }
+
+    /// <summary>
+    /// Get or set user id.
+    /// </summary>
+    [Column("UserId", TypeName = "integer")]
+    public int UserId { get; set; }
 
     /// <summary>
     /// Get or set user's name.

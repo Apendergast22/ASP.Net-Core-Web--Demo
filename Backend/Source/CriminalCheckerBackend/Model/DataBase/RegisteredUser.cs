@@ -6,7 +6,7 @@ namespace CriminalCheckerBackend.Model.DataBase;
 /// <summary>
 /// Database registered user model.
 /// </summary>
-public class RegisteredUser : BaseUserEntity
+public class RegisteredUser
 {
     /// <summary>
     /// Empty constructor.
@@ -40,6 +40,15 @@ public class RegisteredUser : BaseUserEntity
         BirthDay = DateOnly.FromDateTime(info.BirthDay);
         SaltPosition = info.SaltPosition;
     }
+
+
+    /// <summary>
+    /// Get or set user id.
+    /// </summary>
+    [Key]
+    [Column("UserId", TypeName = "integer")]
+    public int UserId { get; set; }
+
 
     /// <summary>
     /// Get or set user's email.

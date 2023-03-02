@@ -70,7 +70,7 @@ namespace CriminalCheckerBackend.Controllers
         /// <returns><see cref="Task"/> for response.</returns>
         /// <response code="200">Returns value is indicated that user is drinker.</response>
         /// <response code="400">Returns if requested data was invalidate/</response>
-        [HttpGet("~/drinker")]
+        [HttpPost("~/drinker")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CheckUserInDrinkersAsync([FromBody]DrinkerDto userInfo)
@@ -81,9 +81,9 @@ namespace CriminalCheckerBackend.Controllers
             try {
                 _validator.Validate(userInfo);
 
-                var isUserDrinker = userInfo.Id == null
+                var isUserDrinker = userInfo.Id == null || userInfo.Id < 1
                     ? await _db.DoesUserDrinkerAsync(userInfo).ConfigureAwait(false)
-                    : await _db.DoesUserDrinkerAsync((int)userInfo.Id).ConfigureAwait(false);
+                    : await _db.Drinkers.AnyAsync(u => u.UserId == userInfo.Id).ConfigureAwait(false); ;
 
                 return Ok(new Dictionary<string,bool>{ { "doesUserDrinker", isUserDrinker } });
             }
