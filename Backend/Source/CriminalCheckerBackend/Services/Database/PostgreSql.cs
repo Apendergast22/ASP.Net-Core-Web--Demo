@@ -86,8 +86,9 @@ namespace CriminalCheckerBackend.Services.Database
             modelBuilder.Entity<RegisteredUser>().Property(f => f.Email).IsRequired();
             modelBuilder.Entity<RegisteredUser>().Property(f => f.Hash).IsRequired();
             modelBuilder.Entity<RegisteredUser>().Property(f => f.Name).IsRequired();
-            modelBuilder.Entity<RegisteredUser>().Property(f => f.Surname).IsRequired();
             modelBuilder.Entity<RegisteredUser>().Property(f => f.Patronymic).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.SaltPosition).IsRequired();
+            modelBuilder.Entity<RegisteredUser>().Property(f => f.Surname).IsRequired();
         }
     }
 }

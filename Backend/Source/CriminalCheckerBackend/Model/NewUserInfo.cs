@@ -12,7 +12,8 @@ public class NewUserInfo
     /// </summary>
     /// <param name="dto"><see cref="SignUpDto"/>.</param>
     /// <param name="hashedPassword">Hashed user password.</param>
-    public NewUserInfo(SignUpDto dto, byte[] hashedPassword)
+    /// <param name="saltPosition">Salt position in file.</param>
+    public NewUserInfo(SignUpDto dto, byte[] hashedPassword, int saltPosition)
     {
         Email = dto.Email;
         Name = dto.Name;
@@ -22,6 +23,7 @@ public class NewUserInfo
         City = dto.City;
         Address = dto.Address;
         Hash = hashedPassword;
+        SaltPosition = saltPosition;
     }
 
     /// <summary>
@@ -33,6 +35,11 @@ public class NewUserInfo
     /// Get or set hashed user's password.
     /// </summary>
     public byte[] Hash { get; }
+
+    /// <summary>
+    /// Get or set salt position in file.
+    /// </summary>
+    public int SaltPosition { get; }
 
     /// <summary>
     /// Get or set user's name.

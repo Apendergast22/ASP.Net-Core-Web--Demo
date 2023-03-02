@@ -43,15 +43,14 @@ public class PasswordService : IPassword
     }
 
     /// <inheritdoc />
-    public byte[] Hash(string password)
+    public (int, byte[]) Hash(string password, int saltPosition)
     {
         if (string.IsNullOrWhiteSpace(password))
             throw new BadPasswordException();
 
         var bytePassword = Encoding.UTF8.GetBytes(password);
-        var salt = ReadSalt();
+        var (position, salt) = ReadSalt(saltPosition);
 
-        var algorithm = SHA256.Create();
         var plainTextWithSaltBytes = new byte[bytePassword.Length + salt.Length];
         for (var i = 0; i < bytePassword.Length; i++)
             plainTextWithSaltBytes[i] = bytePassword[i];
@@ -59,11 +58,12 @@ public class PasswordService : IPassword
         for (var i = 0; i < salt.Length; i++)
             plainTextWithSaltBytes[bytePassword.Length + i] = salt[i];
 
-        return algorithm.ComputeHash(plainTextWithSaltBytes);
+        var algorithm = SHA256.Create();
+        return (position, algorithm.ComputeHash(plainTextWithSaltBytes));
     }
 
     /// <inheritdoc />
-    public bool VerifyPassword(string password, byte[] hash)
+    public bool VerifyPassword(string password, byte[] hash, int saltPosition)
     {
         if (string.IsNullOrWhiteSpace(password))
             throw new BadPasswordException();
@@ -71,7 +71,7 @@ public class PasswordService : IPassword
         if (hash == null || hash.Length == 0)
             throw new ArgumentNullException(nameof(hash));
 
-        var hashedPassword = Hash(password);
+        var (position, hashedPassword) = Hash(password, saltPosition);
         if (hashedPassword.Length != hash.Length)
             return false;
         
@@ -81,13 +81,14 @@ public class PasswordService : IPassword
     /// <summary>
     /// Read any salt byte array from text storage.
     /// </summary>
-    /// <returns>Salt.</returns>
-    private byte[] ReadSalt()
+    /// <param name="position">Salt position in salt file.</param>
+    /// <returns>Salt position ant salt.</returns>
+    private (int, byte[]) ReadSalt(int position = -1)
     {
         if (!File.Exists(_pathToSalt))
             throw new FileNotFoundException();
 
-        var skip = Random.Shared.Next(0, _saltItemsCount - 2);
-        return Encoding.UTF8.GetBytes(File.ReadAllLines(_pathToSalt, Encoding.UTF8).Skip(skip).Take(1).Single());
+        var skip = position == -1 ? Random.Shared.Next(0, _saltItemsCount - 2) : position;
+        return  (skip, Encoding.UTF8.GetBytes(File.ReadAllLines(_pathToSalt, Encoding.UTF8).Skip(skip).Take(1).Single()));
     }
 }

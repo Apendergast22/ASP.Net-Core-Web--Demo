@@ -23,22 +23,24 @@ namespace CriminalCheckerBackend.Tests.Services
             Assert.Throws<ArgumentOutOfRangeException>(() => new PasswordService(Path.GetRandomFileName(), 10));
             
             var badPathToSaltService = new PasswordService(Path.GetRandomFileName(), 100);
-            Assert.Throws<FileNotFoundException>(() => badPathToSaltService.Hash(GoodPassword));
+            Assert.Throws<FileNotFoundException>(() => badPathToSaltService.Hash(GoodPassword, 1));
         }
 
         [Test]
         [Description("Checking methods arguments")]
         public void BadPasswordThrowTest()
         {
+#pragma warning disable CS8625
             Assert.Throws<BadPasswordException>(() => PasswordService.Hash(null));
             Assert.Throws<BadPasswordException>(() => PasswordService.Hash(string.Empty));
 
             var passHash = new byte[] { 1, 2 };
-            Assert.Throws<BadPasswordException>(() => PasswordService.VerifyPassword(null, passHash));
-            Assert.Throws<BadPasswordException>(() => PasswordService.VerifyPassword(string.Empty, passHash));
+            Assert.Throws<BadPasswordException>(() => PasswordService.VerifyPassword(null, passHash, 1));
+            Assert.Throws<BadPasswordException>(() => PasswordService.VerifyPassword(string.Empty, passHash, 1));
 
-            Assert.Throws<ArgumentNullException>(() => PasswordService.VerifyPassword(GoodPassword, null));
-            Assert.Throws<ArgumentNullException>(() => PasswordService.VerifyPassword(GoodPassword, Array.Empty<byte>()));
+            Assert.Throws<ArgumentNullException>(() => PasswordService.VerifyPassword(GoodPassword, null, 1));
+            Assert.Throws<ArgumentNullException>(() => PasswordService.VerifyPassword(GoodPassword, Array.Empty<byte>(), 1));
+#pragma warning restore CS8625
         }
 
         [Test]
@@ -51,13 +53,13 @@ namespace CriminalCheckerBackend.Tests.Services
             
             var passwords = allPasswords
                 .Distinct()
-                .ToDictionary(password => password, _ => new List<byte[]>());
+                .ToDictionary(password => password, _ => new List<(int, byte[])>());
 
             foreach (var password in passwords.Keys)
                 passwords[password].AddRange(allPasswords.Select(_ => PasswordService.Hash(password)));
 
             foreach (var password in passwords.Keys)
-                passwords[password].Select(hash => PasswordService.VerifyPassword(password, hash)).ToList().ForEach(Assert.True);
+                passwords[password].Select(hash => PasswordService.VerifyPassword(password, hash.Item2, hash.Item1)).ToList().ForEach(Assert.True);
         }
 
         [Test]
@@ -70,14 +72,14 @@ namespace CriminalCheckerBackend.Tests.Services
 
             var passwords = allPasswords
                 .Distinct()
-                .ToDictionary(password => password, _ => new List<byte[]>());
+                .ToDictionary(password => password, _ => new List<(int, byte[])>());
 
             foreach (var password in passwords.Keys)
                 passwords[password].AddRange(allPasswords.Select(_ => PasswordService.Hash(password)));
 
             var badPasswords = passwords.Keys.ToDictionary(key => key, key => key + Path.GetRandomFileName());
             foreach (var password in passwords.Keys)
-                passwords[password].Select(hash => PasswordService.VerifyPassword(badPasswords[password], hash)).ToList().ForEach(Assert.False);
+                passwords[password].Select(hash => PasswordService.VerifyPassword(badPasswords[password], hash.Item2, hash.Item1)).ToList().ForEach(Assert.False);
         }
     }
 }

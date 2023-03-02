@@ -21,6 +21,7 @@ public class RegisteredUser : BaseUserEntity
         City = string.Empty;
         Address = string.Empty;
         BirthDay = DateOnly.MinValue;
+        SaltPosition = -1;
     }
 
     /// <summary>
@@ -37,6 +38,7 @@ public class RegisteredUser : BaseUserEntity
         City = info.City;
         Address = info.Address;
         BirthDay = DateOnly.FromDateTime(info.BirthDay);
+        SaltPosition = info.SaltPosition;
     }
 
     /// <summary>
@@ -48,9 +50,15 @@ public class RegisteredUser : BaseUserEntity
     /// <summary>
     /// Get or set hashed user's password.
     /// </summary>
-    [MaxLength(16)]
+    [MaxLength(32)]
     [Column("Hash", TypeName = "bytea")]
     public byte[] Hash { get; }
+
+    /// <summary>
+    /// Get or set salt position in file.
+    /// </summary>
+    [Column("SaltPosition", TypeName = "integer")]
+    public int SaltPosition { get; }
 
     /// <summary>
     /// Get or set user's name.

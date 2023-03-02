@@ -83,7 +83,8 @@ namespace CriminalCheckerBackend.Controllers
         {
             try {
                 _validator.Validate(dto);
-                await _db.RegistrationNewUserAsync(new NewUserInfo(dto, _passwordService.Hash(dto.Password)))
+                var hashResult = _passwordService.Hash(dto.Password);
+                await _db.RegistrationNewUserAsync(new NewUserInfo(dto, hashResult.Item2, hashResult.Item1))
                     .ConfigureAwait(false);
 
                 return await SignInUserAsync(new SignInDto { Email = dto.Email, Password = dto.Password, KeepSign = false })
@@ -126,7 +127,7 @@ namespace CriminalCheckerBackend.Controllers
                 if (user == null)
                     return Unauthorized();
 
-                if (!_passwordService.VerifyPassword(dto.Password, user.Hash))
+                if (!_passwordService.VerifyPassword(dto.Password, user.Hash, user.SaltPosition))
                     return BadRequest();
 
                 var claims = new List<Claim>
@@ -144,7 +145,8 @@ namespace CriminalCheckerBackend.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity), authProperties);
-                return Ok();
+
+                return Ok(new Dictionary<string, int> { { "id", user.UserId } });
             }
             catch (InvalidDtoException exception) {
                 return BadRequest((_bodyBuilder.Build(exception)));
@@ -167,7 +169,7 @@ namespace CriminalCheckerBackend.Controllers
         [HttpPost("~/signout")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SignOutUserAsync([FromBody] SignInDto dto)
+        public async Task<IActionResult> SignOutUserAsync()
         {
             // Log
             try {
