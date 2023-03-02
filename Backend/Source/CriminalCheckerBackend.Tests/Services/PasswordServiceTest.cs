@@ -11,7 +11,7 @@ namespace CriminalCheckerBackend.Tests.Services
         private static readonly string PathToTestFolder =
             Path.Combine(
                 Path.GetDirectoryName(Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory)) ??
-                throw new ArgumentNullException(), "TestItems");
+                throw new ArgumentNullException(), @"Debug\net6.0\TestItems");
 
         private static readonly IPassword PasswordService = new PasswordService(Path.Combine(PathToTestFolder, "TestSalt.txt"), 80);
 
@@ -51,10 +51,10 @@ namespace CriminalCheckerBackend.Tests.Services
             
             var passwords = allPasswords
                 .Distinct()
-                .ToDictionary(password => password, _ => new List<byte[]>(10));
+                .ToDictionary(password => password, _ => new List<byte[]>());
 
             foreach (var password in passwords.Keys)
-                passwords[password] = passwords[password].Select(_ => PasswordService.Hash(password)).ToList();
+                passwords[password].AddRange(allPasswords.Select(_ => PasswordService.Hash(password)));
 
             foreach (var password in passwords.Keys)
                 passwords[password].Select(hash => PasswordService.VerifyPassword(password, hash)).ToList().ForEach(Assert.True);
@@ -67,13 +67,13 @@ namespace CriminalCheckerBackend.Tests.Services
             var allPasswords = new List<string>();
             for (var i = 0; i < 10; i++)
                 allPasswords.Add(Path.GetRandomFileName());
-            
+
             var passwords = allPasswords
                 .Distinct()
-                .ToDictionary(password => password, _ => new List<byte[]>(10));
+                .ToDictionary(password => password, _ => new List<byte[]>());
 
             foreach (var password in passwords.Keys)
-                passwords[password] = passwords[password].Select(_ => PasswordService.Hash(password)).ToList();
+                passwords[password].AddRange(allPasswords.Select(_ => PasswordService.Hash(password)));
 
             var badPasswords = passwords.Keys.ToDictionary(key => key, key => key + Path.GetRandomFileName());
             foreach (var password in passwords.Keys)
