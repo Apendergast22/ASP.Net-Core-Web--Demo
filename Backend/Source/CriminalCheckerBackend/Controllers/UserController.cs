@@ -151,7 +151,7 @@ namespace CriminalCheckerBackend.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                return Ok(new Dictionary<string, int> { { "id", user.UserId } });
+                return Ok(new UserDto(user));
             }
             catch (InvalidDtoException exception) {
                 return BadRequest((_bodyBuilder.Build(exception)));
